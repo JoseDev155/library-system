@@ -18,5 +18,5 @@ class Book:
 
     def __post_init__(self) -> None:
         # EN: An empty ISBN means "no ISBN", so it stays unique when present.
-        # ES: Un ISBN vacío significa "sin ISBN", así sigue siendo único si existe.
+        # ES: Un ISBN vacío significa "sin ISBN"; así sigue siendo único.
         self.isbn = self.isbn or None

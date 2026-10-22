@@ -6,7 +6,10 @@ requires-python = ">=3.15"
 dependencies = []
 
 [dependency-groups]
-dev = []
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -19,5 +22,8 @@ packages = ["library_entities"]
 testpaths = ["tests"]
 
 [tool.ruff]
-line-length = 88
+line-length = 79
 target-version = "py315"
+
+[tool.coverage.run]
+source = ["library_entities"]

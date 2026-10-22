@@ -3,7 +3,7 @@ from decimal import Decimal
 
 
 # EN: Payment of one fine inside a receipt. A fine is paid only once.
-# ES: Pago de una multa dentro de un comprobante. Una multa se paga una sola vez.
+# ES: Pago de una multa dentro de un comprobante; se paga una sola vez.
 @dataclass(slots=True)
 class Payment:
     id: int | None

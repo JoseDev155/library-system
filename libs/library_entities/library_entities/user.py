@@ -39,7 +39,7 @@ class User:
 
     def can_borrow(self, has_pending_fines: bool) -> bool:
         # EN: Pending fines block loans but keep the account active.
-        # ES: Las multas pendientes bloquean préstamos, pero la cuenta sigue activa.
+        # ES: Las multas pendientes bloquean préstamos; la cuenta sigue activa.
         return self.active and not has_pending_fines
 
     def ensure_can_borrow(self, has_pending_fines: bool) -> None:

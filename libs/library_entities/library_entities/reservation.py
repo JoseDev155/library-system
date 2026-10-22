@@ -29,7 +29,10 @@ class Reservation:
         self.status = ReservationStatus(self.status)
 
     def is_active(self) -> bool:
-        return self.status in (ReservationStatus.QUEUED, ReservationStatus.HELD)
+        return self.status in (
+            ReservationStatus.QUEUED,
+            ReservationStatus.HELD,
+        )
 
     def hold(self, copy_id: int, held_until: datetime) -> None:
         if self.status is not ReservationStatus.QUEUED:
