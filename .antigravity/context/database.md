@@ -16,7 +16,7 @@ El SQL es la referencia para diseñar los modelos de `backend/app/repositories/o
 
 - Mismo diseño en los tres motores. Solo cambian los tipos de columna (tabla de abajo).
 - Estados como `VARCHAR` con `CHECK`, no como `ENUM` nativo: se comporta igual en los tres. `CHECK` se aplica desde MySQL 8.0.16 y MariaDB 10.2.1.
-- Dinero con `NUMERIC(10, 2)` (`DECIMAL(10, 2)` en MySQL y MariaDB).
+- Dinero con `NUMERIC(10, 2)` (`DECIMAL(10, 2)` en MySQL y MariaDB), siempre en USD.
 - Fechas en UTC "ingenuo" (sin zona). La aplicación pone todas las fechas, así que no hay `DEFAULT` de fecha en la base. La conversión a `America/El_Salvador` se hace en la capa de servicios (RNF-7).
 - MySQL y MariaDB con InnoDB y `utf8mb4`.
 - **Sin índices parciales** (MySQL y MariaDB no los soportan). Las reglas "un ejemplar no tiene dos préstamos activos" y "no hay dos reservas activas del mismo libro y usuario" se garantizan con una columna generada numérica (`active_flag`, que vale 1 mientras el registro está vivo y `NULL` después) y un índice único normal que la incluye; los `NULL` no cuentan como duplicados; además, el préstamo toma un bloqueo de fila (`with_for_update()`) sobre el ejemplar (spec, sección 5.3).
@@ -40,7 +40,7 @@ users 1───* refresh_tokens
 users 1───* loans *───1 book_copies *───1 books
 users 1───* reservations *───1 books
 loans 1───0..1 fines *───1 users
-fines 1───0..1 payments
+fines 1───0..1 payments *───1 receipts *───1 users (cajero)
 users 1───* audit_logs
 ```
 
@@ -54,7 +54,8 @@ users 1───* audit_logs
 | `loans` | `Loan` | Estados: `ACTIVE`, `RETURNED`. El retraso se calcula, no se guarda |
 | `reservations` | `Reservation` | Estados: `QUEUED`, `HELD`, `FULFILLED`, `CANCELLED`, `EXPIRED` |
 | `fines` | `Fine` | Estados: `PENDING`, `PAID`, `WAIVED`. Guarda la tarifa vigente (spec, casos límite) |
-| `payments` | `Payment` | Comprobante con número único (RF-17) |
+| `receipts` | `Receipt` | Comprobante de un cobro, con número único (RF-17); agrupa varios pagos |
+| `payments` | `Payment` | Pago de una multa dentro de un comprobante |
 | `audit_logs` | `AuditLog` | Solo se agrega; nunca se edita (RF-20) |
 
 Los parámetros de préstamo (`max_active_loans`, `loan_days`, `max_renewals`, `reservation_hold_hours`, `fine_per_day`) viven en configuración, no en tablas (spec, sección 8.1).
@@ -81,7 +82,7 @@ INSERT INTO faculties (code, name) VALUES
     ('900', 'Personal administrativo y de servicios');
 
 CREATE TABLE users (
-    id                  VARCHAR(20) PRIMARY KEY,           -- carnet: 2024-PM-101
+    id                  VARCHAR(20) PRIMARY KEY,           -- carnet: 2024-PM-101-01
     institutional_email VARCHAR(255) NOT NULL UNIQUE,
     name                VARCHAR(200) NOT NULL,
     role                VARCHAR(20)  NOT NULL,
@@ -92,7 +93,7 @@ CREATE TABLE users (
     updated_at          TIMESTAMP    NOT NULL,
     CONSTRAINT ck_users_role CHECK (role IN
         ('admin', 'dev', 'librarian', 'cashier', 'teacher', 'student')),
-    CONSTRAINT ck_users_id CHECK (id ~ '^[0-9]{4}-[A-Z]{2}-[0-9]{3}(-[0-9]{2})?$')
+    CONSTRAINT ck_users_id CHECK (id ~ '^[0-9]{4}-[A-Z]{2}-[0-9]{3}-[0-9]{2}$')
 );
 CREATE INDEX ix_users_faculty ON users (faculty_code);
 
@@ -202,17 +203,25 @@ CREATE TABLE fines (
 );
 CREATE INDEX ix_fines_user_status ON fines (user_id, status);
 
-CREATE TABLE payments (
+CREATE TABLE receipts (
     id             UUID PRIMARY KEY,
-    fine_id        UUID           NOT NULL UNIQUE REFERENCES fines (id),
-    cashier_id     VARCHAR(20)           NOT NULL REFERENCES users (id),
-    amount         NUMERIC(10, 2) NOT NULL,
-    method         VARCHAR(20)    NOT NULL,                  -- efectivo, tarjeta (POS) o transferencia
     receipt_number VARCHAR(30)    NOT NULL UNIQUE,
+    cashier_id     VARCHAR(20)    NOT NULL REFERENCES users (id),
+    method         VARCHAR(20)    NOT NULL,                  -- efectivo, tarjeta (POS) o transferencia
+    total          NUMERIC(10, 2) NOT NULL,                  -- USD; suma de sus pagos
     paid_at        TIMESTAMP      NOT NULL,
-    CONSTRAINT ck_payments_method CHECK (method IN ('CASH', 'CARD', 'TRANSFER')),
+    CONSTRAINT ck_receipts_method CHECK (method IN ('CASH', 'CARD', 'TRANSFER')),
+    CONSTRAINT ck_receipts_total CHECK (total > 0)
+);
+
+CREATE TABLE payments (
+    id         UUID PRIMARY KEY,
+    receipt_id UUID           NOT NULL REFERENCES receipts (id),
+    fine_id    UUID           NOT NULL UNIQUE REFERENCES fines (id),   -- una multa se paga una vez
+    amount     NUMERIC(10, 2) NOT NULL,
     CONSTRAINT ck_payments_amount CHECK (amount > 0)
 );
+CREATE INDEX ix_payments_receipt ON payments (receipt_id);
 
 CREATE TABLE audit_logs (
     id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -262,7 +271,7 @@ CREATE TABLE users (
     CONSTRAINT fk_users_faculty FOREIGN KEY (faculty_code) REFERENCES faculties (code),
     CONSTRAINT ck_users_role CHECK (role IN
         ('admin', 'dev', 'librarian', 'cashier', 'teacher', 'student')),
-    CONSTRAINT ck_users_id CHECK (id REGEXP '^[0-9]{4}-[A-Z]{2}-[0-9]{3}(-[0-9]{2})?$'),
+    CONSTRAINT ck_users_id CHECK (id REGEXP '^[0-9]{4}-[A-Z]{2}-[0-9]{3}-[0-9]{2}$'),
     INDEX ix_users_faculty (faculty_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -381,18 +390,27 @@ CREATE TABLE fines (
     INDEX ix_fines_user_status (user_id, status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE payments (
+CREATE TABLE receipts (
     id             CHAR(36) PRIMARY KEY,
-    fine_id        CHAR(36)       NOT NULL UNIQUE,
-    cashier_id     VARCHAR(20)       NOT NULL,
-    amount         DECIMAL(10, 2) NOT NULL,
-    method         VARCHAR(20)    NOT NULL,
     receipt_number VARCHAR(30)    NOT NULL UNIQUE,
+    cashier_id     VARCHAR(20)    NOT NULL,
+    method         VARCHAR(20)    NOT NULL,
+    total          DECIMAL(10, 2) NOT NULL,
     paid_at        DATETIME(6)    NOT NULL,
+    CONSTRAINT fk_receipts_cashier FOREIGN KEY (cashier_id) REFERENCES users (id),
+    CONSTRAINT ck_receipts_method CHECK (method IN ('CASH', 'CARD', 'TRANSFER')),
+    CONSTRAINT ck_receipts_total CHECK (total > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE payments (
+    id         CHAR(36) PRIMARY KEY,
+    receipt_id CHAR(36)       NOT NULL,
+    fine_id    CHAR(36)       NOT NULL UNIQUE,
+    amount     DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT fk_payments_receipt FOREIGN KEY (receipt_id) REFERENCES receipts (id),
     CONSTRAINT fk_payments_fine FOREIGN KEY (fine_id) REFERENCES fines (id),
-    CONSTRAINT fk_payments_cashier FOREIGN KEY (cashier_id) REFERENCES users (id),
-    CONSTRAINT ck_payments_method CHECK (method IN ('CASH', 'CARD', 'TRANSFER')),
-    CONSTRAINT ck_payments_amount CHECK (amount > 0)
+    CONSTRAINT ck_payments_amount CHECK (amount > 0),
+    INDEX ix_payments_receipt (receipt_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE audit_logs (
@@ -410,16 +428,16 @@ CREATE TABLE audit_logs (
 
 ## Identificador de usuario
 
-`users.id` es el carnet universitario `AAAA-II-FFF` (año de ingreso, iniciales de los apellidos y código de facultad), por ejemplo `2024-PM-101`. Si se repite la combinación, la regla propuesta añade un correlativo (`2024-PM-101-02`); ver spec, secciones 8.2 y D-13. Una restricción `CHECK` valida el formato y todas las claves foráneas a usuarios usan `VARCHAR(20)`. `faculties` guarda los códigos de la spec, sección 8.3.
+`users.id` es el carnet universitario `AAAA-II-FFF-NN` (año de ingreso, iniciales de los apellidos, código de facultad y correlativo), por ejemplo `2024-PM-101-01`. El correlativo desempata a las personas que coinciden en las otras tres partes (spec, sección 8.2). Una restricción `CHECK` valida el formato y todas las claves foráneas a usuarios usan `VARCHAR(20)`. `faculties` guarda los códigos de la spec, sección 8.3.
 
 ## Qué viene de los prototipos
 
-Los campos que salen de los prototipos ya están en la spec, sección 8 (y la 12.1 explica qué se descarta): carnet y facultad en `users`; edición, signatura y área en `books`; tipo de circulación y ubicación física en `book_copies`; `rate_per_day` en `fines`; `loaned_by` en `loans`; `method` en `payments`.
+Los campos que salen de los prototipos ya están en la spec, sección 8 (y la 12.1 explica qué se descarta): carnet y facultad en `users`; edición, signatura y área en `books`; tipo de circulación y ubicación física en `book_copies`; `rate_per_day` en `fines`; `loaned_by` en `loans`; `method` en `receipts`.
 
 ## Decisiones pendientes
 
-- **Varias multas en un solo cobro** (D-14). Con la spec actual, `payments.fine_id` es único y cada pago tiene su comprobante, así que un cobro múltiple crea un pago por multa. Si se quiere un solo comprobante, hace falta una tabla `receipts` y que `payments` apunte a ella.
-- **Colisiones del carnet** (D-13). Confirmar la regla del correlativo.
+- **Cobro de varias multas:** resuelto con `receipts` (un comprobante) y `payments` (un pago por multa); el cobro se registra en una sola transacción.
+- **Moneda:** USD.
 - **Límite de préstamos.** El mostrador muestra un máximo de 5 libros para un estudiante y la spec dice 3 (D-5).
 - **Tarifa por "día hábil".** Los prototipos hablan de días hábiles; la spec no define calendario (D-4). `fines.days_late` guarda el número ya calculado.
 - **Estadísticas de los prototipos** (totales de usuarios, ejemplares por estado) se calculan con consultas, no con columnas.
