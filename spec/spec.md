@@ -126,7 +126,10 @@ library-system/
 │   └── spec.md                         # this document
 ├── scripts/
 │   ├── setup.sh                        # install dependencies
-│   └── verify.sh                       # lint + tests + coverage + build
+│   ├── verify.sh                       # lint + tests + coverage + build
+│   ├── install-hooks.sh                # enables the versioned Git hooks
+│   └── hooks/
+│       └── post-commit                 # syncs GitHub -> GitLab after each commit
 │
 ├── libs/
 │   └── library_entities/               # 6. BUSINESS ENTITIES (standalone library)
@@ -518,9 +521,9 @@ Cada herramienta lee su propia carpeta. Lo común está en `AGENTS.md` y `spec/s
 | `.claude/` | Claude Code | `settings.json` (permisos), `rules/` (reglas por ruta) y `commands/` (como `/verify`) |
 | `.agents/` | Antigravity (Claude Code **no** la lee) | `rules/`, `workflows/` y `templates/` (archivos base para tareas futuras) |
 | `.antigravity/` | Nadie la lee de forma automática: es una carpeta de trabajo del repo | `README.md` con las notas del IDE, `context/`, `commands/` y `resources/` con los prototipos del frontend (exportaciones de Stitch o Claude Design) |
-| `scripts/` | Todos | `setup.sh` y `verify.sh`, que ejecutan las mismas comprobaciones |
+| `scripts/` | Todos | `setup.sh` y `verify.sh` (mismas comprobaciones), `install-hooks.sh` y `hooks/post-commit` (sincronización GitHub → GitLab) |
 
-Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan; `CLAUDE.local.example.md` es la plantilla versionada de `CLAUDE.local.md`.
+Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan.
 
 ## 14. Casos límite
 

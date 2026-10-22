@@ -12,5 +12,6 @@ Todo lo común (stack, comandos, reglas de las 7 capas, convenciones, seguridad 
 - Comandos de build y pruebas del frontend con Bun, desde `frontend/`: `bun install`, `bun run build`, `bun run test` y `bun run lint`; del backend, con `uv` (ver `AGENTS.md`).
 - **Instala siempre versiones exactas:** `bun add -E` (y `-E -d` para dev) y `exact = true` en `bunfig.toml`. Nunca uses rangos `^` ni `~`.
 - Las reglas por ruta están en `.claude/rules/`; los permisos compartidos, en `.claude/settings.json`.
-- Para la configuración local, copia `CLAUDE.local.example.md` a `CLAUDE.local.md`.
+- La configuración local (rutas de tu máquina, perfiles de Git) va en `CLAUDE.local.md`, que no se versiona.
+- Tras cada commit en el clon de GitHub, un hook de Git sincroniza con GitLab (ver `AGENTS.md`, "Sincronización con GitLab"). No lo desactives ni lo evites con `--no-verify` sin avisar.
 - Preferencias personales y pruebas locales van en `CLAUDE.local.md` y `.claude/settings.local.json` (ambos en `.gitignore`), no aquí.

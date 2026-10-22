@@ -1,0 +1,23 @@
+#!/bin/sh
+# EN: After each commit in the GitHub clone, run the user's own GitHub -> GitLab sync script.
+# ES: Después de cada commit en el clon de GitHub, ejecuta el script propio de sincronización a GitLab.
+#
+# EN: The script path is NOT stored in the repo; set SYNC_GITLAB_SCRIPT or keep ~/sync-gitlab.sh.
+# ES: La ruta del script NO se guarda en el repo; define SYNC_GITLAB_SCRIPT o deja ~/sync-gitlab.sh.
+
+# EN: Do nothing when explicitly skipped.
+# ES: No hace nada si se omite de forma explícita.
+[ -n "${SKIP_GITLAB_SYNC:-}" ] && exit 0
+
+# EN: Only the GitHub clone syncs; the GitLab clone must never trigger it (avoids loops).
+# ES: Solo sincroniza el clon de GitHub; el clon de GitLab nunca debe dispararlo (evita bucles).
+git remote get-url origin 2>/dev/null | grep -q "github.com" || exit 0
+
+sync_script="${SYNC_GITLAB_SCRIPT:-$HOME/sync-gitlab.sh}"
+[ -f "$sync_script" ] || exit 0
+
+# EN: Run in the background so the commit does not wait; a failure never blocks the commit.
+# ES: Corre en segundo plano para que el commit no espere; un fallo nunca bloquea el commit.
+log="$(git rev-parse --git-dir)/sync-gitlab.log"
+( bash "$sync_script" >>"$log" 2>&1 || echo "sync-gitlab failed ($(date))" >>"$log" ) &
+exit 0
