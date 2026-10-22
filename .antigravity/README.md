@@ -26,10 +26,10 @@ Los colores y la tipografía de los prototipos salen de `DESIGN.md`.
 | Lint del backend | `uv run ruff check .` | `backend/` |
 | Crear migración | `alembic revision --autogenerate -m "msg"` | `backend/` |
 | Aplicar migraciones | `alembic upgrade head` | `backend/` |
-| Frontend | `vp dev`, `vp check`, `vp test`, `vp build` | `frontend/` |
+| Frontend | `bun run dev`, `bun run lint`, `bun run test`, `bun run build` | `frontend/` |
 
 ## Qué no hacer desde el IDE
 
-- No edites `.env`, `uv.lock` ni el lockfile de Bun.
+- No edites `.env`, `uv.lock` ni `bun.lock`.
 - No toques los archivos de licencia.
 - No cambies `libs/library_entities/` sin actualizar antes la spec.

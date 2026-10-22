@@ -1,79 +1,93 @@
 # DESIGN.md
 
-Identidad visual del sistema de biblioteca. Sirve de referencia para humanos, para Claude Design y Google Stitch (que pueden importar o generar un `DESIGN.md`), y para los agentes que escriben el frontend.
+Identidad visual del sistema de biblioteca. Sirve de referencia para humanos y para los agentes que escriben el frontend.
 
-> **Estado: provisional.** Los colores de abajo son estimaciones hechas a partir del logo de la universidad, no valores oficiales ni extraídos del CSS del sitio. Confírmalos con el cuentagotas del navegador, con la extracción desde URL de Stitch o con la captura web de Claude Design (ver "Cómo confirmar los tokens"). No hay manual de marca público de UNICAES que lo respalde.
-
-## Referencia de estilo
-
-Sitio de referencia: https://bibliotecadigital.catolica.edu.sv/ (Biblioteca Digital Miguel de Cervantes). Del contenido de la página se observa:
-
-- Barra superior simple: logo a la izquierda, enlaces (Recursos, Blog, Comunidad, Tutoriales) y "Iniciar Sesión".
-- Bloque de bienvenida con ilustración y un texto corto que invita a iniciar sesión con el correo institucional.
-- **Tarjetas con imagen y título** para los recursos principales (Acceso Abierto, Acceso Controlado, Recursos UNICAES).
-- **Categorías como enlaces tipo etiqueta** (Ciencias, Ingeniería, Salud, Matemáticas, etc.).
-- Tarjetas de blog con imagen, título, extracto y autor.
-- Pie de página en columnas: enlaces rápidos, servicios y contacto.
-
-Lo que **no** se pudo leer: colores exactos, tipografías y tamaños (el contenido obtenido no incluye el CSS).
+> **Referencia completa:** el sistema de diseño «Institucional Humanista», exportado desde Google Stitch, está en `.antigravity/resources/institucional_humanista/DESIGN.md`, junto a los prototipos de las pantallas. Este archivo es el resumen que usa el código: si hay una diferencia, se corrige aquí a propósito, no se copia a ciegas.
+>
+> **Estado de los colores: provisionales.** Se estimaron a partir del logo de la universidad; no son valores oficiales ni salen del CSS del sitio. No hay manual de marca público. La tipografía, las medidas y los componentes ya vienen definidos por el sistema de Stitch.
 
 ## Principios
 
 1. **Claridad antes que decoración.** Pocas decisiones por pantalla.
-2. **Pensado para personal de caja de mayor edad:** texto grande, botones grandes, un solo camino principal por pantalla y mensajes en español sencillo, sin jerga contable ni técnica.
+2. **Pensado para personal de caja y mostrador de mayor edad:** texto grande, botones grandes, un solo camino principal por pantalla y mensajes en español sencillo, sin jerga contable ni técnica.
 3. **Confirmación antes de lo irreversible** (cobrar, condonar, dar de baja).
 4. **Accesible:** WCAG 2.2 AA como mínimo.
+5. **Capas tonales y contornos nítidos**, sin sombras pesadas ni efectos de cristal.
 
-## Tokens de color (provisionales)
+## Tokens de color
 
-| Token | Valor estimado | Uso |
+| Token | Valor | Uso |
 |---|---|---|
-| `--color-primary` | `#8B1E2D` | Vino institucional: barra superior, botones principales, enlaces destacados |
-| `--color-primary-dark` | `#6E1824` | Hover y estados activos del primario |
-| `--color-accent` | `#FFC000` | Dorado de acento: resaltados, indicadores, etiquetas |
+| `--color-primary` | `#8B1E2D` | Vino institucional: barra superior, botón principal (uno por pantalla), navegación activa |
+| `--color-primary-dark` | `#6E1824` | Solo `hover`, `active` y anillos de foco del primario |
+| `--color-accent` | `#FFC000` | Dorado: resaltados, insignias de categoría, atención secundaria |
 | `--color-bg` | `#FFFFFF` | Fondo de página |
-| `--color-surface` | `#F7F5F2` | Tarjetas y secciones alternas |
+| `--color-surface` | `#F7F5F2` | Tarjetas, paneles de búsqueda y encabezados de tabla |
 | `--color-border` | `#E5E0DA` | Bordes y separadores |
 | `--color-text` | `#1F1F1F` | Texto principal |
 | `--color-text-muted` | `#6B6B6B` | Texto secundario |
-| `--color-success` | `#2E7D32` | Operación exitosa |
-| `--color-warning` | `#B26A00` | Advertencias |
-| `--color-error` | `#B3261E` | Errores |
-| `--color-info` | `#1565C0` | Información |
+| `--color-success` | `#2E7D32` | Préstamo validado, saldo saldado, disponible |
+| `--color-warning` | `#B26A00` | Próximo a vencer, reserva por expirar |
+| `--color-error` | `#B3261E` | Multa pendiente, bloqueo de cuenta, baja |
+| `--color-info` | `#1565C0` | Avisos, ejemplar prestado, guías |
+| `--color-overlay` | `#1F1F1F` al 50 % | Fondo de los modales de confirmación |
 
 Reglas de contraste:
 
-- Texto blanco sobre `--color-primary`: cumple con holgura (alrededor de 9:1).
-- Texto `--color-text` sobre `--color-accent`: cumple (alrededor de 10:1).
+- Texto blanco sobre `--color-primary`: cumple con holgura (más de 9:1).
+- Texto `--color-text` sobre `--color-accent`: cumple (más de 10:1).
 - **Nunca texto blanco sobre `--color-accent`**: el contraste es insuficiente.
-- No comuniques estados solo con color: acompáñalos de icono y texto.
+- Ningún estado se comunica solo con color: va con icono y texto.
 
 ## Tipografía
 
-Por confirmar con el sitio de referencia. Mientras tanto: una sans-serif legible del sistema o de Google Fonts, con estos tamaños mínimos:
+Familia única: **Source Sans 3** (titulares, cuerpo y controles).
 
-| Contexto | Tamaño mínimo |
-|---|---|
-| Cuerpo general | 16 px |
-| Pantallas de caja y mostrador | 18 px |
-| Botones | 18 px, peso medio |
-| Títulos de página | 28 px o más |
+| Nivel | Tamaño / interlineado | Peso | Uso |
+|---|---|---|---|
+| `headline-xl` | 36 / 44 px (28 / 36 en móvil) | 700 | Título de página |
+| `headline-lg` | 28 / 36 px (24 / 32 en móvil) | 600 | Título de sección |
+| `headline-md` | 22 / 28 px | 600 | Título de tarjeta |
+| `title-desk` | 20 / 26 px | 600 | Subtítulos |
+| `body-operational` | 18 / 26 px | 400 y 600 | **Caja, préstamos y devoluciones**: todo texto funcional |
+| `label-operational` | 18 / 24 px | 600 | Etiquetas y botones operativos |
+| `body-default` | 16 / 24 px | 400 y 600 | Catálogo y consultas |
+| `label-default` | 16 / 20 px | 500 | Etiquetas generales |
+| `caption` | 14 / 18 px | 400 | Solo ISBN y metadatos no críticos |
+
+No se permiten tamaños menores a 14 px.
+
+## Forma, espacio y distribución
+
+- **Radios:** 4 px en campos, botones y tarjetas; 8 px en modales y paneles; píldora completa (9999 px) solo para etiquetas de categoría y estados de ejemplar.
+- **Espaciado:** `space-xs` 4 px, `space-sm` 8 px, `space-md` 16 px, `space-lg` 24 px, `space-xl` 40 px. Márgenes de 32 px (16 px en móvil) y gutters de 24 px (16 px en móvil).
+- **Contenedor:** ancho máximo de 1280 px en vistas generales y 1024 px en formularios operativos.
+- **Caja y mostrador:** una sola columna primaria centrada, campos en vertical.
+- **Catálogo:** grilla de 12 columnas en escritorio, 4 en móvil.
+- **Foco:** anillo de 3 px en `--color-primary` o `--color-info`, con 2 px de separación.
 
 ## Componentes
 
-- **Botones:** altura mínima de 48 px. Un único botón primario (vino) por pantalla; los secundarios en contorno.
-- **Tarjetas:** fondo `--color-surface`, borde `--color-border`, esquinas redondeadas, imagen o icono arriba y título claro.
-- **Etiquetas de categoría:** enlaces tipo píldora para filtrar el catálogo.
-- **Formularios:** una columna, etiquetas visibles encima del campo (no solo placeholder), un campo por línea, errores junto al campo con texto concreto.
-- **Estados del ejemplar:** disponible, prestado, reservado, en reparación y baja, cada uno con color, icono y texto.
-- **Tablas:** filas con buen espaciado, encabezado fijo, acciones al final de la fila.
-- **Navegación:** barra superior con las secciones según el rol; el usuario solo ve lo que sus permisos permiten.
+- **Botones:** altura mínima de 48 px (52 px recomendado en caja), texto de 18 px en peso 600 y al menos 24 px de espacio horizontal. Primario: fondo vino y texto blanco, **uno por pantalla**. Secundario: contorno de 2 px vino sobre fondo blanco. Destructivo: fondo `--color-error`, siempre con confirmación previa.
+- **Campos:** etiqueta permanente encima (nunca solo placeholder), altura mínima de 48 px, borde de 1,5 px `--color-border` que pasa a vino en foco. Error debajo del campo, en `--color-error` a 16 px, con icono y qué hacer para corregirlo.
+- **Etiquetas de categoría:** píldoras con fondo `--color-surface` y borde `--color-border`; seleccionadas pasan a fondo vino y texto blanco.
+- **Estados de ejemplar** (píldora con icono y texto):
 
-## Prototipos
+  | Estado | Fondo | Borde y texto |
+  |---|---|---|
+  | Disponible | `#E8F5E9` | `#2E7D32` |
+  | Prestado | `#E3F2FD` | `#1565C0` |
+  | Reservado | `#FFF8E1` | `#B26A00` |
+  | En reparación o baja | `#FFEBEE` | `#B3261E` |
 
-Las exportaciones de Stitch o Claude Design van en `.antigravity/resources/`. Son referencia visual, no código de producción: el frontend real vive en `frontend/` y sus colores salen de los tokens de este archivo. Todavía no hay prototipos.
+- **Tarjetas de catálogo:** fondo `--color-surface`, borde `--color-border`, carátula o icono arriba, título en seminegrita, autor y metadatos, y la etiqueta de disponibilidad al final.
+- **Tablas operativas:** filas de al menos 56 px, encabezado fijo con fondo `--color-surface`, importes y fechas alineados a la derecha, nombres y descripciones a la izquierda, y las acciones al final de la fila.
+- **Modales de confirmación irreversible:** 480 px de ancho, centrados sobre el overlay, con el resumen de la operación (monto a cobrar, libro a dar de baja) y confirmación explícita.
+- **Navegación:** barra superior con las secciones según el rol; cada usuario ve solo lo que sus permisos permiten.
 
 ## Pantallas del alcance v1
+
+Los prototipos están en `.antigravity/resources/`. Qué se adopta de cada uno y qué se adapta al implementar el frontend está en la spec, sección 12.
 
 1. Inicio de sesión
 2. Búsqueda de catálogo y detalle de libro
@@ -82,14 +96,6 @@ Las exportaciones de Stitch o Claude Design van en `.antigravity/resources/`. So
 5. Gestión de catálogo
 6. Caja: cobro de multas
 7. Administración de usuarios y roles
-
-## Cómo confirmar los tokens
-
-- **Cuentagotas del navegador:** abre el sitio de referencia, abre las herramientas de desarrollo, inspecciona la barra superior y los botones, y copia los colores calculados (pestaña de estilos computados).
-- **Google Stitch:** usa la extracción de sistema de diseño desde una URL y compara el resultado con esta tabla.
-- **Claude Design:** usa la herramienta de captura web sobre la URL de referencia y revisa los tokens extraídos.
-
-Después de confirmar, actualiza esta tabla y quita el aviso de "provisional".
 
 ## Marca
 

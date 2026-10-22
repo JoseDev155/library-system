@@ -20,10 +20,10 @@ Sistema de biblioteca universitaria (proyecto académico, pensado para crecer). 
 | Autenticación | JWT (PyJWT) con rate limit |
 | Lint y formato Python | Ruff (>= 0.15.6, entiende `lazy import`), PEP 8 |
 | Pruebas backend | pytest y pytest-cov (cobertura mínima de 80 %) |
-| Frontend | React (JavaScript, JSX), Vite+ (`vp`), Bun como gestor de paquetes |
+| Frontend | React (JavaScript, JSX); Bun como gestor de paquetes y runtime, Vite, Oxlint y Oxfmt (sin Vite+) |
 | Estándar JS | ES2026, módulos ES (nada de CommonJS) |
 
-Node.js sigue siendo el runtime de Vite+. Bun se usa como gestor de paquetes, no como runtime de las herramientas.
+Todo el frontend se ejecuta solo con Bun (versión de referencia 1.4.3). Vite+ (`vp`) no se usa porque su runtime gestionado es Node.js; en su lugar se usan Vite, Oxlint y Oxfmt con Bun (spec, sección 11).
 
 ## Comandos
 
@@ -43,14 +43,16 @@ uv run ruff format .            # formato
 Frontend (desde `frontend/`):
 
 ```bash
-vp install   # instala con Bun
-vp dev       # desarrollo
-vp check     # formato y lint
-vp test      # pruebas
-vp build     # build de producción
+bun install            # instala desde bun.lock
+bun ci                 # CI: lockfile exacto, falla si no coincide
+bun add -E <paquete>   # agrega con versión exacta (-E -d para dev)
+bun run dev            # desarrollo
+bun run lint           # Oxlint
+bun run test           # bun test
+bun run build          # build de producción
 ```
 
-Los subcomandos de `vp` evolucionan rápido: confirma con `vp --help` antes de asumir uno.
+Siempre versiones exactas: `exact = true` en `bunfig.toml` y `bun add -E`. No uses `npm`, `pnpm` ni `yarn`.
 
 ## Arquitectura: 7 capas
 
@@ -60,9 +62,9 @@ La estructura completa de carpetas está en `spec/spec.md`, sección 4. Reglas d
 |---|---|---|
 | 1. Presentación | `frontend/` | nada de Python; usa el contrato HTTP |
 | 2. Interfaz de servicio | `backend/app/interface/` | `dto`, `services`, `security` |
-| 3. Implementación del servicio | `backend/app/services/` | `dto`, `library_entities`, `business` |
+| 3. Implementación del servicio | `backend/app/services/` | `dto`, `library_entities`, `domain` |
 | 4. Tipos de datos | `backend/app/dto/` | nada |
-| 5. Lógica del negocio | `backend/app/business/` | `library_entities`, `repositories`, `security` |
+| 5. Dominio (lógica del negocio) | `backend/app/domain/` | `library_entities`, `repositories`, `security` |
 | 6. Entidades del negocio | `libs/library_entities/` | nada |
 | 7. Repositorio de datos | `backend/app/repositories/` | `library_entities` |
 | Transversal | `backend/app/security/` | nada de las capas |
@@ -70,11 +72,11 @@ La estructura completa de carpetas está en `spec/spec.md`, sección 4. Reglas d
 Reglas que no se rompen:
 
 - La presentación solo conoce **mensajes y tipos de datos**, nunca entidades.
-- `business` solo maneja **entidades**, nunca DTOs ni objetos de FastAPI.
+- `domain` solo maneja **entidades**, nunca DTOs ni objetos de FastAPI.
 - El **translator** convierte entidades en DTOs y viceversa; el **adapter** orquesta cada caso de uso.
-- Solo `business` llama al repositorio. Los endpoints y los adapters no lo tocan.
+- Solo `domain` llama al repositorio. Los endpoints y los adapters no lo tocan.
 - Las entidades son clases puras (sin SQL, sin FastAPI, sin ORM). Los modelos de tablas viven en `repositories/orm_models/`.
-- Las reglas de negocio (límites, multas, transiciones de estado) viven en entidades o en `business`, nunca en endpoints.
+- Las reglas de negocio (límites, multas, transiciones de estado) viven en entidades o en `domain`, nunca en endpoints.
 - POO estricta en casi todas las capas; `security/`, `config.py` y `main.py` son flexibles (spec, sección 6).
 - Cada carpeta de `backend/app/` lleva su `__init__.py`.
 
@@ -96,6 +98,20 @@ Reglas que no se rompen:
 - Secretos solo en variables de entorno. `.env` nunca se versiona; `.env.example` sí.
 - No registres datos personales ni tokens en logs.
 
+## Equipo virtual de agentes
+
+Cuando una tarea cae en un rol, el agente adopta sus responsabilidades y respeta sus restricciones. Las reglas comunes de este archivo aplican a todos.
+
+| Rol | Responsabilidades | Restricciones | Comandos permitidos |
+|---|---|---|---|
+| Frontend Engineer | `frontend/`: pantallas, componentes, hooks y llamadas a la API según `DESIGN.md` | No toca `backend/` ni `libs/`; no agrega colores sueltos; solo conoce mensajes y DTOs | `bun install`, `bun ci`, `bun add -E`, `bun run dev\|lint\|test\|build` |
+| Backend Developer | `backend/app/` y `libs/library_entities/`: capas, reglas de negocio, seguridad y endpoints | No toca `frontend/`; respeta las dependencias entre capas; cada endpoint declara su permiso | `uv sync`, `uv run pytest`, `uv run ruff`, `uv run fastapi dev` |
+| DBA | `backend/app/repositories/`: modelos ORM, migraciones Alembic y portabilidad entre PostgreSQL, MySQL y MariaDB | Sin SQL crudo ni tipos exclusivos de un motor; no cambia entidades sin actualizar la spec | `uv run alembic ...`, `uv run pytest` |
+| QA Engineer | Pruebas unitarias con cobertura mínima de 80 % y una prueba por RF | Nunca omite, desactiva ni pone en cuarentena una prueba para ponerla en verde | `uv run pytest --cov`, `bun run test` |
+| Documentation Writer | `spec/spec.md`, `README.md`, `DESIGN.md` y archivos de agentes | La spec manda; no inventa comportamiento: lo anota en "Dudas abiertas" | `git diff --check` |
+
+Ningún rol ejecuta `npm`, `pnpm` ni `yarn`, ni instala dependencias sin versión exacta.
+
 ## Carpetas de agentes
 
 Lo común vive aquí y en la spec; cada carpeta solo concreta lo propio de su herramienta y no redefine reglas.
@@ -109,11 +125,24 @@ Lo común vive aquí y en la spec; cada carpeta solo concreta lo propio de su he
 
 Los archivos personales (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan.
 
+## Sincronización con GitLab
+
+El repositorio vive en GitHub y se refleja en GitLab. Cada commit hecho en el clon de GitHub dispara el hook `scripts/hooks/post-commit`, que ejecuta en segundo plano el script personal de sincronización (`~/sync-gitlab.sh`, o la ruta de `SYNC_GITLAB_SCRIPT`). El hook:
+
+- Solo actúa en un clon cuyo `origin` sea GitHub, para que el clon de GitLab no cause bucles.
+- No hace nada si el script no existe en esa máquina.
+- Registra su salida en `.git/sync-gitlab.log` y nunca bloquea el commit.
+- Se omite con `SKIP_GITLAB_SYNC=1 git commit ...`.
+
+Activación, una vez por clon: `scripts/install-hooks.sh` (configura `core.hooksPath`). Ejecución manual: `/sync-gitlab` en Claude Code o el workflow `sync-gitlab` en Antigravity.
+
+Las rutas de las carpetas de trabajo y los perfiles de Git son de cada máquina: van en `CLAUDE.local.md`, nunca en el repositorio.
+
 ## Reglas de trabajo
 
 - Spec primero: un cambio de comportamiento tiene tres partes: edición de `spec/spec.md`, edición del código y pruebas.
 - Una tarea cada vez, con las pruebas primero. El backend solo está completo cuando **todas** las pruebas unitarias pasan con al menos 80 % de cobertura.
-- No añadas dependencias sin pedirlo. No edites a mano `uv.lock` ni el lockfile de Bun.
+- No añadas dependencias sin pedirlo, y siempre con versión exacta. No edites a mano `uv.lock` ni `bun.lock`, ni bajes `minimumReleaseAge` sin una razón explícita.
 - No toques `.env`, `libs/` sin actualizar antes la spec, ni los archivos de licencia.
 - Si algo es ambiguo, pregunta o anótalo en "Dudas abiertas" de la spec en lugar de inventar.
 
@@ -123,7 +152,7 @@ Ejecuta `scripts/verify.sh` (o los pasos por separado) y reporta el resultado de
 
 1. `uv run ruff check .` y `uv run ruff format --check .` (en `backend/`)
 2. `uv run pytest --cov --cov-fail-under=80` (incluye `test_architecture.py`)
-3. `vp check`, `vp test` y `vp build` (en `frontend/`)
+3. `bun run lint`, `bun run test` y `bun run build` (en `frontend/`)
 4. Que cada RF tocado tenga al menos una prueba, y que `spec/spec.md` esté actualizada si el comportamiento cambió.
 
 Si algún paso no se pudo ejecutar, dilo explícitamente en lugar de omitirlo.

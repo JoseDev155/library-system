@@ -1,0 +1,10 @@
+[install]
+# EN: Save exact versions instead of ^ranges (like save-exact in .npmrc).
+# ES: Guarda versiones exactas en lugar de rangos ^ (como save-exact en .npmrc).
+exact = true
+# EN: Ignore package versions published less than 3 days ago (value in seconds).
+# ES: Ignora versiones publicadas hace menos de 3 días (valor en segundos).
+minimumReleaseAge = 259200
+# EN: bun.lock is a text lockfile and stays in version control.
+# ES: bun.lock es un lockfile de texto y se versiona.
+saveTextLockfile = true

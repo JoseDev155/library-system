@@ -7,5 +7,5 @@ if [ -d "$root/backend" ]; then
   (cd "$root/backend" && uv python pin 3.15 && uv sync)
 fi
 if [ -d "$root/frontend" ]; then
-  (cd "$root/frontend" && vp install)
+  (cd "$root/frontend" && bun install)
 fi

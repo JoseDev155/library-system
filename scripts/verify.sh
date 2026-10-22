@@ -11,7 +11,7 @@ if [ -d "$root/backend" ]; then
 fi
 if [ -d "$root/frontend" ]; then
   cd "$root/frontend"
-  vp check
-  vp test
-  vp build
+  bun run lint
+  bun run test
+  bun run build
 fi
