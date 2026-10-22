@@ -103,8 +103,20 @@ biblioteca/
 ├── .claude/                           # Claude Code
 │   ├── settings.json
 │   └── rules/
-├── .agents/                           # Antigravity (opcional)
-├── prototipos/                        # exportaciones de Claude Design / Stitch
+├── .agents/                           # instrucciones por agente de IA
+│   ├── README.md
+│   ├── templates/                     # plantillas de AGENTS.md, CLAUDE.md, DESIGN.md y spec.md
+│   ├── backend-agente/                # instrucciones.md, config.json, scripts/
+│   ├── frontend-agente/
+│   ├── bd-agente/
+│   ├── pruebas-agente/
+│   └── documentacion-agente/
+├── .antigravity/                      # IDE Antigravity
+│   ├── instructions.md
+│   ├── guidelines.md
+│   ├── ide-config.json
+│   ├── scripts/                       # inicializar-proyecto.sh
+│   └── prototipos/                    # prototipos del frontend (Claude Design / Stitch)
 │
 ├── libs/
 │   └── biblioteca_entidades/          # 6. ENTIDADES DEL NEGOCIO (librería)
@@ -282,6 +294,18 @@ Programación orientada a objetos y pruebas unitarias con `pytest`.
 - **Los tests deben pasar para dar el backend por completo y funcional.** Es una condición estricta de finalización (sección 11), no una tarea que se hace de una vez: cada tarea de backend empieza por sus pruebas y no se da por terminada mientras `pytest` falle o la cobertura baje del umbral.
 - La prueba `test_arquitectura.py` (reglas de importación entre capas) cuenta como parte de la suite.
 
+### 4.7 Carpetas de agentes
+
+Cada herramienta de IA o IDE tiene su carpeta en la raíz, y ninguna redefine las reglas del sistema: la spec manda, luego `AGENTS.md`.
+
+| Carpeta | Contenido |
+|---|---|
+| `.claude/` | Configuración de Claude Code (`CLAUDE.md` en la raíz importa `AGENTS.md`) |
+| `.agents/` | Una subcarpeta por agente: `backend-agente`, `frontend-agente`, `bd-agente`, `pruebas-agente` y `documentacion-agente`. Cada una lleva `instrucciones.md` (rol, alcance, reglas y verificación), `config.json` y `scripts/` con su verificación obligatoria. `templates/` guarda las plantillas de `AGENTS.md`, `CLAUDE.md`, `DESIGN.md` y `spec.md` |
+| `.antigravity/` | Instrucciones y guías del IDE Antigravity (`instructions.md`, `guidelines.md`), `ide-config.json`, `scripts/inicializar-proyecto.sh` y los prototipos del frontend en `prototipos/` |
+
+Los prototipos son referencia visual, no código de producción; el frontend real vive en `frontend/`.
+
 ## 5. Modelo de dominio
 
 Las entidades son clases puras en `libs/biblioteca_entidades/`: sin SQL, sin FastAPI, sin ORM. Los modelos de tablas viven en `repositorio/modelos_orm/` y el repositorio convierte entre ambos.
@@ -368,7 +392,7 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 
 ## 8. Interfaz y diseño
 
-Identidad visual y tokens en `DESIGN.md`. Prototipos exportados en `prototipos/`.
+Identidad visual y tokens en `DESIGN.md`. Prototipos exportados en `.antigravity/prototipos/`.
 
 Pantallas del alcance v1:
 
