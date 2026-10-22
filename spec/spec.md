@@ -137,12 +137,15 @@ library-system/
 │       ├── tests/
 │       └── library_entities/
 │           ├── __init__.py             # exports the entities
+│           ├── exceptions.py
+│           ├── faculty.py
 │           ├── user.py
 │           ├── book.py
 │           ├── book_copy.py
 │           ├── loan.py
 │           ├── reservation.py
 │           ├── fine.py
+│           ├── receipt.py
 │           ├── payment.py
 │           └── audit_log.py
 │
