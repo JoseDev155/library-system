@@ -238,6 +238,40 @@ repositorio -> conexion -> BD    guarda
    │  Entidad -> DTO (translator) -> Response -> Frontend
 ```
 
+### 4.5 Base de datos y ORM
+
+`repositorio/conexion.py` es una clase genérica: el resto del sistema no sabe qué motor hay debajo. Motores soportados:
+
+| Prioridad | Motor | Driver | URL de SQLAlchemy |
+|---|---|---|---|
+| Principal | PostgreSQL | `psycopg` 3 | `postgresql+psycopg://` |
+| Secundaria | MySQL | `PyMySQL` | `mysql+pymysql://` |
+| Secundaria | MariaDB | `PyMySQL` | `mariadb+pymysql://` |
+
+ORM elegido: **SQLAlchemy 2.1** (estilo 2.0: `DeclarativeBase`, `Mapped[]` y `select()`), con **Alembic** para las migraciones en `repositorio/migraciones/`.
+
+Por qué SQLAlchemy:
+
+- Soporta de forma oficial PostgreSQL, MySQL y MariaDB con la misma API, y cada motor tiene su dialecto propio.
+- Es el ORM más usado del ecosistema Python, con mantenimiento activo desde hace años (la serie 2.1 está publicada y exige Python 3.11 o superior) y documentación extensa.
+- Alembic es de la misma organización y es la herramienta estándar de migraciones para SQLAlchemy.
+- Los modelos van en `repositorio/modelos_orm/` y no se mezclan con las entidades (sección 5), de modo que SQLAlchemy queda confinado a la capa 7.
+
+Alternativas descartadas:
+
+- **SQLModel**: es una capa sobre SQLAlchemy que mezcla modelo de tabla y esquema Pydantic, justo lo que la arquitectura separa. Además, la comunidad ha señalado poca actividad reciente en el proyecto.
+- **Tortoise ORM, ormar**: el soporte de MariaDB y de migraciones es menos maduro y su comunidad es mucho más pequeña.
+
+Reglas de portabilidad (para que el mismo código corra en los tres motores):
+
+- Nada de SQL crudo ni de tipos exclusivos de un motor (por ejemplo `JSONB`, `ARRAY`) en `modelos_orm/`.
+- Las restricciones de unicidad y de claves foráneas se declaran en el modelo, no en la migración a mano.
+- Las fechas se guardan en UTC (RNF-7). Se usa `DateTime(timezone=True)`, y en MySQL y MariaDB se normaliza a UTC al leer.
+- Cada motor se prueba en integración con el mismo conjunto de pruebas del repositorio. PostgreSQL es el motor de referencia; los otros dos no deben romper esas pruebas.
+- El motor se elige por la variable de entorno `DATABASE_URL`, nunca por código.
+
+Compatibilidad con Python 3.15: `psycopg` y `PyMySQL` son paquetes de Python puro (psycopg usa `libpq` del sistema, sin extensión propia en C en su modo básico), lo que reduce el riesgo; SQLAlchemy 2.1 se instala sin compilar. Aun así, antes de fijar versiones hay que verificar con `uv sync` en 3.15 y revisar los clasificadores de cada paquete (ver D-7).
+
 ## 5. Modelo de dominio
 
 Las entidades son clases puras en `libs/biblioteca_entidades/`: sin SQL, sin FastAPI, sin ORM. Los modelos de tablas viven en `repositorio/modelos_orm/` y el repositorio convierte entre ambos.
@@ -369,12 +403,12 @@ Principio de diseño: pocas decisiones por pantalla, botones grandes y mensajes 
 
 ## 12. Dudas abiertas
 
-- **D-1 Base de datos y ORM.** Propuesta: PostgreSQL, SQLAlchemy 2.x y Alembic. Falta confirmar.
+- **D-1 Base de datos y ORM.** Decidido en la sección 4.5: PostgreSQL (principal), MySQL y MariaDB (secundarias), SQLAlchemy 2.1 y Alembic. Falta confirmar la versión mínima de cada motor y verificar los drivers en Python 3.15 (D-7).
 - **D-2 "Sin exposición pública".** Interpretado así: el backend no es accesible directamente y solo recibe tráfico del proxy inverso; el frontend sí es público. Falta aclarar si los usuarios deben llegar al sistema desde fuera del campus (internet o solo red interna o VPN).
 - **D-3 Librería de rate limit.** Candidatos: `slowapi` (memoria, un solo proceso) o un limitador con Redis (varios procesos). Verificar mantenimiento antes de elegir.
 - **D-4 Calendario.** ¿Los vencimientos se corren si caen en día no hábil o feriado?
 - **D-5 Valores de negocio.** Límites, plazos y tarifa de multa (sección 5.1): validar con la biblioteca.
 - **D-6 Navegadores soportados.** ES2026 puro puede excluir navegadores antiguos; definir el `build.target` según los dispositivos reales de los usuarios.
-- **D-7 Compatibilidad con Python 3.15.** Python 3.15 es muy reciente: confirmar que todas las dependencias con extensiones en C (por ejemplo, las de Pydantic y Argon2) tengan ruedas para 3.15 antes de fijarlo; si no, usar 3.14 y subir después.
+- **D-7 Compatibilidad con Python 3.15.** Python 3.15 es muy reciente: confirmar que todas las dependencias con extensiones en C (por ejemplo, las de Pydantic y Argon2) tengan ruedas para 3.15 antes de fijarlo; si no, usar 3.14 y subir después. Incluye `SQLAlchemy`, `Alembic`, `psycopg` y `PyMySQL`.
 - **D-8 Inicio de sesión.** ¿Cuentas propias del sistema o integración con la identidad institucional (correo institucional, SSO)? Dominio del correo por confirmar.
 - **D-9 Licencia y propiedad intelectual.** Elegir licencia (ver `LICENSE.md`) y confirmar con la universidad si hay una política de propiedad intelectual sobre proyectos de curso.
