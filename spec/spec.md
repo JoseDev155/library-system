@@ -225,11 +225,14 @@ library-system/
 │           └── security/
 │
 └── frontend/                           # 1. PRESENTATION
-    ├── package.json                    # devEngines: bun
-    ├── bunfig.toml                     # Bun settings (equivalent of .npmrc)
-    ├── .node-version                   # Node, runtime of Vite+
+    ├── package.json                    # Bun only; packageManager and trustedDependencies
+    ├── bunfig.toml                     # exact versions, release age gate (replaces .npmrc)
+    ├── .bun-version                    # Bun version pin (replaces .node-version)
+    ├── bun.lock                        # text lockfile, versioned
     ├── vite.config.js
     ├── index.html
+    ├── tests/
+    │   └── setup.js                    # happy-dom registration for bun test
     └── src/
         ├── api/                        # calls to the service interface
         ├── components/
@@ -439,8 +442,56 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 - **RNF-8 Calidad.** Python con PEP 8 (Ruff) y JavaScript con ES2026. Cobertura mínima de 80% en el backend y en la librería de entidades (sección 6.3). Cada RF tiene al menos una prueba.
 - **RNF-9 Accesibilidad.** WCAG 2.2 AA. En las pantallas de caja: texto de al menos 18 px, botones de al menos 48 px y el flujo de cobro en 3 pantallas o menos (supuesto a validar con los cajeros).
 - **RNF-10 Portabilidad de BD.** Mismo código para PostgreSQL, MySQL y MariaDB (sección 5.3).
+- **RNF-11 Cadena de suministro.** Dependencias con versión exacta, antigüedad mínima de publicación y sin scripts de instalación no autorizados (sección 11.3).
 
-## 11. Interfaz y diseño
+## 11. Frontend (Bun)
+
+### 11.1 Herramientas
+
+| Función | Herramienta |
+|---|---|
+| Gestor de paquetes y runtime de scripts | Bun |
+| Servidor de desarrollo y build | Vite, ejecutado con el runtime de Bun (`bunx --bun vite`) |
+| Lint y formato | Oxlint y Oxfmt, ejecutados con Bun |
+| Pruebas | `bun test` con happy-dom |
+| UI | React con JavaScript (JSX) |
+
+**Vite+ (`vp`) no se usa.** Vite+ acepta Bun como gestor de paquetes (`devEngines.packageManager`), pero su runtime gestionado es Node.js: los demás runtimes no los administra. Por eso no puede ejecutarse de forma directa y exclusiva con Bun. Para cumplir la restricción de "solo Bun" se usan por separado los componentes de ese toolchain (Vite, Oxlint y Oxfmt), ejecutados con el runtime de Bun. Si en el futuro Vite+ soporta Bun como runtime, se puede volver a evaluar.
+
+Versión de referencia: Bun 1.4.3.
+
+### 11.2 Comandos
+
+```bash
+bun install            # install from bun.lock
+bun ci                 # CI: exact lockfile, fails on mismatch
+bun add -E <package>   # add a dependency with the exact version
+bun add -E -d <package>  # same, as a dev dependency
+bun run dev            # development server
+bun run lint           # Oxlint
+bun run test           # bun test
+bun run build          # production build
+```
+
+### 11.3 Seguridad de dependencias (equivalencias con Node.js + pnpm)
+
+| Con Node.js + pnpm | Con Bun |
+|---|---|
+| `save-exact=true` en `.npmrc` y `pnpm add -E` | `exact = true` en `bunfig.toml` y `bun add -E` |
+| `.node-version` | `.bun-version` y `"packageManager": "bun@1.4.3"` en `package.json`. Bun no exige ninguno de los dos; sirven como fijación de versión para CI y gestores de versiones |
+| `pnpm install --frozen-lockfile` en CI | `bun ci` (o `bun install --frozen-lockfile`) |
+| Scripts de dependencias bloqueados salvo lista autorizada | Bun no ejecuta los scripts de instalación de las dependencias; solo los de `trustedDependencies` en `package.json`, que aquí queda vacío |
+| `minimumReleaseAge` (en minutos, pnpm 10.16 o superior) | `minimumReleaseAge` en `bunfig.toml`, **en segundos** (259200 = 3 días) |
+| `pnpm-lock.yaml` | `bun.lock` (texto), que se versiona |
+
+Notas:
+
+- La unidad de `minimumReleaseAge` cambia entre pnpm (minutos) y Bun (segundos).
+- Una versión exacta pedida (`paquete@1.2.3`) también respeta esa antigüedad mínima, así que un parche urgente de menos de 3 días se instala bajando el valor de forma temporal y deliberada.
+- `minimumReleaseAgeExcludes` en `bunfig.toml` permite exceptuar un paquete o una versión exacta, sin bajar el valor global.
+- Bun ofrece una API de escáner de seguridad para integrar un servicio de análisis; elegir uno queda como duda abierta (D-10).
+
+## 12. Interfaz y diseño
 
 Identidad visual y tokens en `DESIGN.md`. Los prototipos exportados van en `.antigravity/resources/`.
 
@@ -456,7 +507,7 @@ Pantallas del alcance v1:
 
 Principio de diseño: pocas decisiones por pantalla, botones grandes y mensajes claros en español, pensados para personal de caja de mayor edad.
 
-## 12. Carpetas de agentes
+## 13. Carpetas de agentes
 
 Cada herramienta lee su propia carpeta. Lo común está en `AGENTS.md` y `spec/spec.md`; las carpetas de agentes solo concretan lo específico de cada herramienta y no redefinen reglas.
 
@@ -471,7 +522,7 @@ Cada herramienta lee su propia carpeta. Lo común está en `AGENTS.md` y `spec/s
 
 Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan.
 
-## 13. Casos límite
+## 14. Casos límite
 
 - Dos bibliotecarios prestan el mismo ejemplar a la vez: el bloqueo de fila sobre el ejemplar dentro de la transacción deja que gane solo uno.
 - Devolución de un ejemplar que no está prestado: se rechaza sin cambiar estados.
@@ -483,7 +534,7 @@ Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/setting
 - ISBN duplicado o con formato inválido: se rechaza con un mensaje que indique cuál es el problema.
 - Cambio de motor de BD con datos existentes: no está soportado en caliente; requiere exportar e importar.
 
-## 14. Fuera de alcance (v1)
+## 15. Fuera de alcance (v1)
 
 - Lectura de recursos digitales (PDF o libros electrónicos).
 - Pagos en línea.
@@ -492,17 +543,17 @@ Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/setting
 - Notificaciones por correo o mensajería.
 - Importación masiva de catálogo.
 
-## 15. Criterios de finalización
+## 16. Criterios de finalización
 
 - Cada RF tiene al menos una prueba que pasa.
 - `uv run pytest` pasa con una cobertura de al menos 80% (incluida `test_architecture.py`), y lo mismo para `libs/library_entities`.
 - `uv run ruff check .` y `uv run ruff format --check .` pasan.
-- `vp check`, `vp test` y `vp build` pasan.
+- `bun run lint`, `bun run test` y `bun run build` pasan (en `frontend/`).
 - En producción, `/docs`, `/redoc` y `/openapi.json` no responden (verificado con una prueba).
 - No hay secretos en el repositorio y `.env.example` está al día.
 - Esta especificación refleja el comportamiento real.
 
-## 16. Dudas abiertas
+## 17. Dudas abiertas
 
 - **D-1 (resuelta)** Base de datos y ORM: SQLAlchemy 2.1 con Alembic; PostgreSQL principal y MySQL/MariaDB secundarias (sección 5).
 - **D-2 "Sin exposición pública".** Interpretado así: el backend no es accesible directamente y solo recibe tráfico del proxy inverso; el frontend sí es público. Falta aclarar si los usuarios deben llegar al sistema desde fuera del campus (internet o solo red interna o VPN).
@@ -513,4 +564,5 @@ Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/setting
 - **D-7 Compatibilidad con Python 3.15.** SQLAlchemy 2.1.5 y `psycopg-binary` 3.3.6 ya publican ruedas para 3.15. Falta confirmar el resto (Pydantic, Argon2, PyMySQL y las herramientas de prueba) con `uv sync`; si algo falla, usar 3.14 y subir después.
 - **D-8 Inicio de sesión.** ¿Cuentas propias del sistema o integración con la identidad institucional (correo institucional, SSO)? Dominio del correo por confirmar.
 - **D-9 Licencia y propiedad intelectual.** Elegir licencia (ver `LICENSE.md`) y confirmar con la universidad si hay una política de propiedad intelectual sobre proyectos de curso.
-- **D-13 Cambios previos en el backend.** Esta especificación aún no refleja las modificaciones que ya hiciste en el backend; falta alinear nombres y estructura con tu código actual.
+- **D-10 Escáner de seguridad de dependencias.** Elegir un escáner para la API de Bun, o usar otro mecanismo de auditoría.
+- **D-11 Oxfmt.** Confirmar que está lo bastante estable para formatear en Bun; si no, usar Prettier con Bun.

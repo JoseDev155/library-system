@@ -4,9 +4,11 @@
       "Bash(uv sync)",
       "Bash(uv run pytest:*)",
       "Bash(uv run ruff:*)",
-      "Bash(vp check)",
-      "Bash(vp test:*)",
-      "Bash(vp build)",
+      "Bash(bun install)",
+      "Bash(bun ci)",
+      "Bash(bun run lint)",
+      "Bash(bun run test)",
+      "Bash(bun run build)",
       "Bash(scripts/verify.sh)",
       "Bash(git status)",
       "Bash(git diff:*)",
@@ -18,7 +20,8 @@
       "Read(./CLAUDE.local.md)",
       "Edit(./LICENSE)",
       "Edit(./NOTICE)",
-      "Edit(./backend/uv.lock)"
+      "Edit(./backend/uv.lock)",
+      "Edit(./frontend/bun.lock)"
     ]
   }
 }

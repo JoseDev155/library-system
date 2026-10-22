@@ -20,10 +20,10 @@ Sistema de biblioteca universitaria (proyecto académico, pensado para crecer). 
 | Autenticación | JWT (PyJWT) con rate limit |
 | Lint y formato Python | Ruff (>= 0.15.6, entiende `lazy import`), PEP 8 |
 | Pruebas backend | pytest y pytest-cov (cobertura mínima de 80 %) |
-| Frontend | React (JavaScript, JSX), Vite+ (`vp`), Bun como gestor de paquetes |
+| Frontend | React (JavaScript, JSX); Bun como gestor de paquetes y runtime, Vite, Oxlint y Oxfmt (sin Vite+) |
 | Estándar JS | ES2026, módulos ES (nada de CommonJS) |
 
-Node.js sigue siendo el runtime de Vite+. Bun se usa como gestor de paquetes, no como runtime de las herramientas.
+Todo el frontend se ejecuta solo con Bun (versión de referencia 1.4.3). Vite+ (`vp`) no se usa porque su runtime gestionado es Node.js; en su lugar se usan Vite, Oxlint y Oxfmt con Bun (spec, sección 11).
 
 ## Comandos
 
@@ -43,14 +43,16 @@ uv run ruff format .            # formato
 Frontend (desde `frontend/`):
 
 ```bash
-vp install   # instala con Bun
-vp dev       # desarrollo
-vp check     # formato y lint
-vp test      # pruebas
-vp build     # build de producción
+bun install            # instala desde bun.lock
+bun ci                 # CI: lockfile exacto, falla si no coincide
+bun add -E <paquete>   # agrega con versión exacta (-E -d para dev)
+bun run dev            # desarrollo
+bun run lint           # Oxlint
+bun run test           # bun test
+bun run build          # build de producción
 ```
 
-Los subcomandos de `vp` evolucionan rápido: confirma con `vp --help` antes de asumir uno.
+Siempre versiones exactas: `exact = true` en `bunfig.toml` y `bun add -E`. No uses `npm`, `pnpm` ni `yarn`.
 
 ## Arquitectura: 7 capas
 
@@ -113,7 +115,7 @@ Los archivos personales (`CLAUDE.local.md`, `.claude/settings.local.json`) no se
 
 - Spec primero: un cambio de comportamiento tiene tres partes: edición de `spec/spec.md`, edición del código y pruebas.
 - Una tarea cada vez, con las pruebas primero. El backend solo está completo cuando **todas** las pruebas unitarias pasan con al menos 80 % de cobertura.
-- No añadas dependencias sin pedirlo. No edites a mano `uv.lock` ni el lockfile de Bun.
+- No añadas dependencias sin pedirlo, y siempre con versión exacta. No edites a mano `uv.lock` ni `bun.lock`, ni bajes `minimumReleaseAge` sin una razón explícita.
 - No toques `.env`, `libs/` sin actualizar antes la spec, ni los archivos de licencia.
 - Si algo es ambiguo, pregunta o anótalo en "Dudas abiertas" de la spec en lugar de inventar.
 
@@ -123,7 +125,7 @@ Ejecuta `scripts/verify.sh` (o los pasos por separado) y reporta el resultado de
 
 1. `uv run ruff check .` y `uv run ruff format --check .` (en `backend/`)
 2. `uv run pytest --cov --cov-fail-under=80` (incluye `test_architecture.py`)
-3. `vp check`, `vp test` y `vp build` (en `frontend/`)
+3. `bun run lint`, `bun run test` y `bun run build` (en `frontend/`)
 4. Que cada RF tocado tenga al menos una prueba, y que `spec/spec.md` esté actualizada si el comportamiento cambió.
 
 Si algún paso no se pudo ejecutar, dilo explícitamente en lugar de omitirlo.
