@@ -367,13 +367,14 @@ Las entidades son clases puras en `libs/library_entities/`: sin SQL, sin FastAPI
 
 | Entidad | Atributos principales | Reglas propias |
 |---|---|---|
-| `User` | id, institutional_email (único), name, role, active | Un usuario inactivo no inicia sesión ni pide préstamos |
-| `Book` | id, isbn (único, opcional), title, authors, category, publisher, year | El ISBN, si existe, es único |
-| `BookCopy` | id, book_id, inventory_code (único), status | Estados: `AVAILABLE`, `LOANED`, `RESERVED`, `UNDER_REPAIR`, `WITHDRAWN`. Un ejemplar prestado no se vuelve a prestar |
-| `Loan` | id, copy_id, user_id, loaned_at, due_at, returned_at, renewals, status | `renew()` respeta el máximo de renovaciones; `days_late(today)` |
-| `Reservation` | id, book_id, user_id, created_at, status, held_until | Estados: `QUEUED`, `HELD`, `FULFILLED`, `CANCELLED`, `EXPIRED` |
-| `Fine` | id, loan_id, user_id, days_late, amount, status, waiver_reason | Estados: `PENDING`, `PAID`, `WAIVED`. `pay()` y `waive(reason)` |
-| `Payment` | id, fine_id, cashier_id, amount, receipt_number (único), paid_at | Un número de comprobante no se repite |
+| `Faculty` | code (3 dígitos), name | Catálogo cerrado de facultades y unidades (sección 8.3) |
+| `User` | id (identificador universitario, sección 8.2), institutional_email (único), name, role, faculty_code, active | Un usuario inactivo no inicia sesión ni pide préstamos. Con multas pendientes queda bloqueado para pedir préstamos, pero sigue activo |
+| `Book` | id, isbn (único, opcional), title, authors, category (materia o tema), faculty_code (área), publisher, edition, year, call_number (signatura) | El ISBN, si existe, es único |
+| `BookCopy` | id, book_id, inventory_code (único), status, circulation, location_floor, location_shelf | Estados: `AVAILABLE`, `LOANED`, `RESERVED`, `UNDER_REPAIR`, `WITHDRAWN`. `circulation` es `LOANABLE` (préstamo a domicilio) o `REFERENCE_ONLY` (solo consulta en sala); un ejemplar `REFERENCE_ONLY` no se presta. Un ejemplar prestado no se vuelve a prestar |
+| `Loan` | id, copy_id, user_id, loaned_by, loaned_at, due_at, returned_at, renewals, status | `renew()` respeta el máximo de renovaciones; `days_late(today)`. Estados: `ACTIVE`, `RETURNED` (el vencido se calcula con `due_at`) |
+| `Reservation` | id, book_id, user_id, copy_id, created_at, status, held_until | Estados: `QUEUED`, `HELD`, `FULFILLED`, `CANCELLED`, `EXPIRED` |
+| `Fine` | id, loan_id, user_id, days_late, rate_per_day, amount, status, waiver_reason, waived_by | Estados: `PENDING`, `PAID`, `WAIVED`. `pay()` y `waive(reason)`. Conserva la tarifa vigente al devolver |
+| `Payment` | id, fine_id, cashier_id, amount, method, receipt_number (único), paid_at | Un número de comprobante no se repite. `method`: `CASH`, `CARD` (voucher del POS bancario) o `TRANSFER`; solo se registra, el sistema no procesa pagos |
 | `AuditLog` | id, user_id, action, entity, entity_id, created_at | Solo se agrega; nunca se edita |
 
 ### 8.1 Parámetros configurables
@@ -387,6 +388,38 @@ Valores por defecto **supuestos**: se validan con la biblioteca antes de usarlos
 | `max_renewals` | 1 | 2 |
 | `reservation_hold_hours` | 48 | 48 |
 | `fine_per_day` | definir | definir |
+
+### 8.2 Identificador universitario
+
+El `id` de `User` es el carnet universitario, con el formato `AAAA-II-FFF`:
+
+| Parte | Significado |
+|---|---|
+| `AAAA` | Año de ingreso (estudiantes y docentes) o de contratación (personal) |
+| `II` | Iniciales de los dos apellidos, en mayúsculas y sin acentos |
+| `FFF` | Código de la facultad o unidad (sección 8.3) |
+
+Ejemplo: Juan Armando Pérez Márquez, que ingresó en 2024 a Ingeniería y Tecnología (`101`), tiene el id `2024-PM-101`. Si la persona tiene un solo apellido, `II` usa la inicial de ese apellido seguida de `X`.
+
+La combinación puede repetirse (otra persona con las mismas iniciales, año y facultad). Regla propuesta, pendiente de confirmar en D-13: la primera persona conserva el formato simple y las siguientes reciben un correlativo, `2024-PM-101-02`, `2024-PM-101-03`, etc. El id es único, no cambia nunca y es lo que se escanea o escribe en el mostrador y en caja.
+
+### 8.3 Facultades y unidades
+
+Códigos supuestos para una universidad mediana (se validan con la universidad). Son datos de la tabla `faculties` y también se usan como área de los libros.
+
+| Código | Facultad o unidad |
+|---|---|
+| `101` | Ingeniería y Tecnología |
+| `102` | Ciencias Exactas (Matemáticas y Física) |
+| `201` | Ciencias de la Salud |
+| `301` | Ciencias Económicas y Administrativas (Economía y Negocios) |
+| `302` | Ciencias Jurídicas (Derecho) |
+| `401` | Ciencias Sociales |
+| `402` | Humanidades y Artes (Humanidades y Filosofía) |
+| `403` | Ciencias de la Educación |
+| `501` | Arquitectura y Diseño |
+| `601` | Ciencias Agropecuarias y Ambientales |
+| `900` | Personal administrativo y de servicios (biblioteca, caja, TI) |
 
 ## 9. Requisitos funcionales (EARS)
 
@@ -408,7 +441,7 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 
 ### Catálogo
 
-- **RF-9** Cuando un usuario autenticado busque por título, autor, ISBN o categoría, el sistema deberá devolver resultados paginados con el número de ejemplares disponibles.
+- **RF-9** Cuando un usuario autenticado busque por título, autor, ISBN o materia, el sistema deberá devolver resultados paginados con el número de ejemplares disponibles y deberá permitir filtrar por facultad o área y ordenar por fecha de ingreso, título o autor.
 - **RF-10** Cuando un bibliotecario cree un libro, el sistema deberá validar que el ISBN, si se informa, no exista y deberá permitir registrar uno o más ejemplares con código de inventario único.
 
 ### Préstamos
@@ -510,6 +543,31 @@ Pantallas del alcance v1:
 
 Principio de diseño: pocas decisiones por pantalla, botones grandes y mensajes claros en español, pensados para personal de caja de mayor edad.
 
+### 12.1 Qué entra de los prototipos
+
+Los prototipos de `.antigravity/resources/` (exportados de Stitch) son referencia visual. Lo que muestran y la spec no cubre **no** entra en v1; el prototipo se adapta a la spec al implementar el frontend, no al revés.
+
+Entra en la spec (ya reflejado en la sección 8):
+
+- Carnet universitario como identificador y criterio de búsqueda de personas (`User.id`).
+- Facultad o unidad del usuario, y área de los libros como filtro del catálogo.
+- Edición, signatura (`call_number`) y ubicación física (piso y estantería) del libro y del ejemplar.
+- Ejemplares de solo consulta (`REFERENCE_ONLY`), mostrados como "Disponible solo consulta".
+- Forma de pago en caja (`CASH`, `CARD`, `TRANSFER`), solo como dato del comprobante.
+- Tarifa por día guardada en cada multa y bibliotecario que registra el préstamo.
+- Estado "bloqueado por mora" en caja y mostrador, derivado de las multas pendientes (RF-12).
+- Totales de usuarios y ejemplares por estado, calculados con consultas; no son columnas.
+
+Queda fuera de v1 (se quita o se oculta del prototipo):
+
+- Recursos digitales, préstamo interbibliotecario y "Solicitar compra".
+- Campana de notificaciones.
+- Recuperar contraseña por autoservicio: el enlace se cambia por «Contacta a la Dirección de Biblioteca» (D-8).
+- Exportar el catálogo, reportes y estado "suspendido" distinto de "inactivo".
+- Atajos de teclado y escáner del mostrador: no cambian la spec, pero el escáner se trata como teclado que escribe el código de inventario o el carnet.
+
+Al implementar hay que corregir también los textos de los prototipos que no corresponden: nombre de la universidad, correo y teléfono de contacto, y la moneda (los prototipos usan USD).
+
 ## 13. Carpetas de agentes
 
 Cada herramienta lee su propia carpeta. Lo común está en `AGENTS.md` y `spec/spec.md`; las carpetas de agentes solo concretan lo específico de cada herramienta y no redefinen reglas.
@@ -545,6 +603,8 @@ Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/setting
 - Aplicación móvil.
 - Notificaciones por correo o mensajería.
 - Importación masiva de catálogo.
+- Recursos digitales, préstamo interbibliotecario, solicitud de compra y exportación del catálogo.
+- Recuperación de contraseña por autoservicio.
 
 ## 16. Criterios de finalización
 
@@ -569,4 +629,7 @@ Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/setting
 - **D-9 Licencia y propiedad intelectual.** Elegir licencia (ver `LICENSE.md`) y confirmar con la universidad si hay una política de propiedad intelectual sobre proyectos de curso.
 - **D-10 Escáner de seguridad de dependencias.** Elegir un escáner para la API de Bun, o usar otro mecanismo de auditoría.
 - **D-11 Oxfmt.** Confirmar que está lo bastante estable para formatear en Bun; si no, usar Prettier con Bun.
-- **D-12 Campos que piden los prototipos.** Carnet, facultad, edición, signatura, ubicación del ejemplar, forma de pago y usuario que registra el préstamo no están en la sección 8. El detalle y las columnas propuestas están en `.antigravity/context/database.md`; falta decidir cuáles entran.
+- **D-12 (resuelta)** Campos de los prototipos: los que entran están en la sección 8 y los que no, en la 12.1. El SQL propuesto está en `.antigravity/context/database.md`.
+- **D-13 Identificador universitario.** El formato `AAAA-II-FFF` se repite entre personas con el mismo año, iniciales y facultad. Se propone un correlativo (`-02`, `-03`). Confirmar esa regla, quién asigna el id (el sistema al matricular) y qué pasa con quien cambia de facultad (el id no cambia). El ejemplo recibido decía `2024-PM-601` pero `101` como código de Ingeniería; se asumió `101` y `601` quedó para Ciencias Agropecuarias.
+- **D-14 Cobro de varias multas.** La pantalla de caja permite pagar varias multas a la vez. Con un `Payment` por multa se emite un comprobante por multa; si se quiere un solo comprobante, hace falta una entidad `Receipt`.
+- **D-15 Moneda.** Los prototipos usan USD; confirmar la moneda de las multas.
