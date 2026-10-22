@@ -125,6 +125,19 @@ Lo común vive aquí y en la spec; cada carpeta solo concreta lo propio de su he
 
 Los archivos personales (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan.
 
+## Sincronización con GitLab
+
+El repositorio vive en GitHub y se refleja en GitLab. Cada commit hecho en el clon de GitHub dispara el hook `scripts/hooks/post-commit`, que ejecuta en segundo plano el script personal de sincronización (`~/sync-gitlab.sh`, o la ruta de `SYNC_GITLAB_SCRIPT`). El hook:
+
+- Solo actúa en un clon cuyo `origin` sea GitHub, para que el clon de GitLab no cause bucles.
+- No hace nada si el script no existe en esa máquina.
+- Registra su salida en `.git/sync-gitlab.log` y nunca bloquea el commit.
+- Se omite con `SKIP_GITLAB_SYNC=1 git commit ...`.
+
+Activación, una vez por clon: `scripts/install-hooks.sh` (configura `core.hooksPath`). Ejecución manual: `/sync-gitlab` en Claude Code o el workflow `sync-gitlab` en Antigravity.
+
+Las rutas de las carpetas de trabajo y los perfiles de Git son de cada máquina: van en `CLAUDE.local.md`, nunca en el repositorio.
+
 ## Reglas de trabajo
 
 - Spec primero: un cambio de comportamiento tiene tres partes: edición de `spec/spec.md`, edición del código y pruebas.
