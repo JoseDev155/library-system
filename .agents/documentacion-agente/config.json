@@ -1,0 +1,19 @@
+{
+  "agente": "documentacion-agente",
+  "rol": "Documentación (spec, README y guías)",
+  "idioma": "es",
+  "fuente_de_verdad": "spec/spec.md",
+  "instrucciones_comunes": [
+    "AGENTS.md"
+  ],
+  "instrucciones": "instrucciones.md",
+  "alcance": [
+    "spec/",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".agents/",
+    ".antigravity/"
+  ],
+  "script_verificacion": "scripts/verificar-documentacion.sh"
+}

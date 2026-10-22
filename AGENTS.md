@@ -7,7 +7,7 @@ Instrucciones para agentes de IA que trabajan en este repositorio. La fuente de 
 Sistema de biblioteca universitaria (proyecto académico, pensado para crecer). API en FastAPI organizada en **7 capas** y frontend en React. Cubre catálogo, préstamos, reservas y multas, con roles y permisos.
 
 - Especificación: `spec.md` (requisitos RF-x en notación EARS). Si el código y la spec difieren, **la spec manda**. Si la spec calla, propón la adición antes de escribir código.
-- Identidad visual: `DESIGN.md`. Prototipos exportados: `prototipos/`.
+- Identidad visual: `DESIGN.md`. Prototipos exportados: `.antigravity/prototipos/`.
 - El backend **no se expone públicamente**: solo es alcanzable a través del proxy inverso. En producción no se publican `/docs`, `/redoc` ni `/openapi.json`.
 
 ## Stack
@@ -100,6 +100,13 @@ Idioma: interfaz, mensajes de error y comentarios en español.
 - Rate limit en login y en el resto de la API (RNF-3).
 - Secretos solo en variables de entorno. `.env` nunca se versiona; `.env.example` sí.
 - No registres datos personales ni tokens en logs.
+
+## Carpetas de agentes
+
+- `.agents/`: una carpeta por agente (`backend-agente`, `frontend-agente`, `bd-agente`, `pruebas-agente`, `documentacion-agente`) con `instrucciones.md`, `config.json` y `scripts/` de verificación. Las plantillas de este archivo, de `CLAUDE.md`, de `DESIGN.md` y de la spec están en `.agents/templates/`.
+- `.antigravity/`: configuración, scripts y guías del IDE Antigravity, más los prototipos del frontend en `.antigravity/prototipos/`.
+- `.claude/`: configuración de Claude Code.
+- Estos archivos no redefinen las reglas de este documento ni de la spec; solo las concretan por agente. Ante un conflicto, manda la spec y luego este archivo.
 
 ## Reglas de trabajo
 

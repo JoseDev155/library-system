@@ -1,0 +1,17 @@
+{
+  "proyecto": "library-system",
+  "idioma": "es",
+  "codificacion": "utf-8",
+  "formateadores": {
+    "python": "ruff",
+    "javascript": "vp check"
+  },
+  "carpetas": {
+    "agentes": ".agents/",
+    "prototipos": ".antigravity/prototipos/",
+    "spec": "spec/spec.md"
+  },
+  "scripts": {
+    "inicializar": ".antigravity/scripts/inicializar-proyecto.sh"
+  }
+}
