@@ -272,6 +272,16 @@ Reglas de portabilidad (para que el mismo código corra en los tres motores):
 
 Compatibilidad con Python 3.15: `psycopg` y `PyMySQL` son paquetes de Python puro (psycopg usa `libpq` del sistema, sin extensión propia en C en su modo básico), lo que reduce el riesgo; SQLAlchemy 2.1 se instala sin compilar. Aun así, antes de fijar versiones hay que verificar con `uv sync` en 3.15 y revisar los clasificadores de cada paquete (ver D-7).
 
+### 4.6 Reglas del backend
+
+Programación orientada a objetos y pruebas unitarias con `pytest`.
+
+- **POO estricta** en casi todas las capas: la lógica vive en clases (entidades, adapters, translators, servicios de `negocio`, repositorios), no en funciones sueltas con estado. Las funciones de módulo se limitan a utilidades puras y sin estado.
+- **Excepciones flexibles:** `seguridad/`, `config.py` y `main.py` pueden usar funciones y módulos sin clases cuando sea más claro.
+- **Pruebas unitarias** con `pytest`, escritas en `backend/tests/` (y en `libs/biblioteca_entidades/tests/` para las entidades). Cubren como mínimo el **80 %** del código del backend, medido con `pytest-cov` (`uv run pytest --cov=app --cov-fail-under=80`).
+- **Los tests deben pasar para dar el backend por completo y funcional.** Es una condición estricta de finalización (sección 11), no una tarea que se hace de una vez: cada tarea de backend empieza por sus pruebas y no se da por terminada mientras `pytest` falle o la cobertura baje del umbral.
+- La prueba `test_arquitectura.py` (reglas de importación entre capas) cuenta como parte de la suite.
+
 ## 5. Modelo de dominio
 
 Las entidades son clases puras en `libs/biblioteca_entidades/`: sin SQL, sin FastAPI, sin ORM. Los modelos de tablas viven en `repositorio/modelos_orm/` y el repositorio convierte entre ambos.
@@ -353,7 +363,7 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 - **RNF-5 Datos personales.** Los logs no contienen contraseñas, tokens ni datos personales. El rol `dev` no accede a datos personales.
 - **RNF-6 CORS.** Orígenes permitidos explícitos; nunca `*`.
 - **RNF-7 Fechas.** Se guardan en UTC y se muestran en `America/El_Salvador`.
-- **RNF-8 Calidad.** Python con PEP 8 (Ruff) y JavaScript con ES2026. Cada RF tiene al menos una prueba.
+- **RNF-8 Calidad.** Python con PEP 8 (Ruff) y JavaScript con ES2026. Cada RF tiene al menos una prueba. El backend sigue las reglas de la sección 4.6: POO estricta y cobertura de pruebas unitarias de al menos 80 %.
 - **RNF-9 Accesibilidad.** WCAG 2.2 AA. En las pantallas de caja: texto de al menos 18 px, botones de al menos 48 px y el flujo de cobro en 3 pantallas o menos (supuesto a validar con los cajeros).
 
 ## 8. Interfaz y diseño
@@ -396,6 +406,7 @@ Principio de diseño: pocas decisiones por pantalla, botones grandes y mensajes 
 
 - Cada RF tiene al menos una prueba que pasa.
 - `uv run ruff check .`, `uv run ruff format --check .` y `uv run pytest` pasan, incluida `test_arquitectura.py`.
+- El backend se considera completo y funcional solo cuando todas las pruebas unitarias de `pytest` pasan y la cobertura es de al menos 80 % (sección 4.6).
 - `vp check`, `vp test` y `vp build` pasan.
 - En producción, `/docs`, `/redoc` y `/openapi.json` no responden (verificado con una prueba).
 - No hay secretos en el repositorio y `.env.example` está al día.
