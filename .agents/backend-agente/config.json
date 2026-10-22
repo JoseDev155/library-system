@@ -1,0 +1,15 @@
+{
+  "agente": "backend-agente",
+  "rol": "Backend (FastAPI en 7 capas)",
+  "idioma": "es",
+  "fuente_de_verdad": "spec/spec.md",
+  "instrucciones_comunes": [
+    "AGENTS.md"
+  ],
+  "instrucciones": "instrucciones.md",
+  "alcance": [
+    "backend/",
+    "libs/"
+  ],
+  "script_verificacion": "scripts/verificar-backend.sh"
+}

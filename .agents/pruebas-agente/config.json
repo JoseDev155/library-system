@@ -1,0 +1,15 @@
+{
+  "agente": "pruebas-agente",
+  "rol": "Pruebas unitarias (pytest)",
+  "idioma": "es",
+  "fuente_de_verdad": "spec/spec.md",
+  "instrucciones_comunes": [
+    "AGENTS.md"
+  ],
+  "instrucciones": "instrucciones.md",
+  "alcance": [
+    "backend/tests/",
+    "libs/*/tests/"
+  ],
+  "script_verificacion": "scripts/verificar-pruebas.sh"
+}

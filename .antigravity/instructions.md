@@ -65,9 +65,7 @@ Open them as `.jsx` files to consult the visual reference of the screens. Design
 | File | Purpose |
 |---|---|
 | `.antigravity/ide-config.json` | General IDE configuration for this project |
-| `.antigravity/commands/` | IDE custom commands (if applicable) |
-| `.antigravity/context/` | Project context for the IDE (if applicable) |
-| `.antigravity/resources/` | IDE static resources (if applicable) |
+| `.antigravity/prototipos/` | Frontend prototypes (visual reference) |
 | `.antigravity/scripts/` | Utility scripts (e.g., `inicializar-proyecto.sh`) |
 
 ## 6. What to consult in other files
