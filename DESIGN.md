@@ -69,6 +69,10 @@ Por confirmar con el sitio de referencia. Mientras tanto: una sans-serif legible
 - **Tablas:** filas con buen espaciado, encabezado fijo, acciones al final de la fila.
 - **Navegación:** barra superior con las secciones según el rol; el usuario solo ve lo que sus permisos permiten.
 
+## Prototipos
+
+Las exportaciones de Stitch o Claude Design van en `.antigravity/resources/`. Son referencia visual, no código de producción: el frontend real vive en `frontend/` y sus colores salen de los tokens de este archivo. Todavía no hay prototipos.
+
 ## Pantallas del alcance v1
 
 1. Inicio de sesión

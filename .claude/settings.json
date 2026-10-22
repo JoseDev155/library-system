@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv sync)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(vp check)",
+      "Bash(vp test:*)",
+      "Bash(vp build)",
+      "Bash(scripts/verify.sh)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./backend/.env)",
+      "Read(./CLAUDE.local.md)",
+      "Edit(./LICENSE)",
+      "Edit(./NOTICE)",
+      "Edit(./backend/uv.lock)"
+    ]
+  }
+}
