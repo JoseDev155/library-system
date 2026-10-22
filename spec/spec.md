@@ -83,7 +83,7 @@ Decisión de diseño: quien registra el préstamo (`librarian`) no cobra la mult
 | 2 | Interfaz de servicio | Lo que se expone: endpoints y tipos de mensajes (Request/Response) | `backend/app/interface/` |
 | 3 | Implementación del servicio | **Adapter** (orquesta cada caso de uso) y **translator** (entidades ↔ tipos de datos) | `backend/app/services/` |
 | 4 | Tipos de datos | Colección de tipos de datos que viajan hasta la implementación del servicio | `backend/app/dto/` |
-| 5 | Lógica del negocio | Reglas del sistema; maneja solo entidades | `backend/app/business/` |
+| 5 | Dominio (lógica del negocio) | Reglas del sistema; maneja solo entidades | `backend/app/domain/` |
 | 6 | Entidades del negocio | Objetos del dominio, como **librería independiente** | `libs/library_entities/` |
 | 7 | Repositorio de datos | Inserción y extracción en la BD; habla solo con la BD y con la lógica de negocio | `backend/app/repositories/` |
 
@@ -194,20 +194,20 @@ library-system/
 │   │   │   ├── loan_dto.py
 │   │   │   └── fine_dto.py
 │   │   │
-│   │   ├── business/                   # 5. BUSINESS LOGIC
+│   │   ├── domain/                    # 5. DOMAIN (business logic)
 │   │   │   ├── __init__.py
-│   │   │   ├── auth_business.py
-│   │   │   ├── catalog_business.py
-│   │   │   ├── loan_business.py
-│   │   │   ├── reservation_business.py
-│   │   │   └── fine_business.py
+│   │   │   ├── auth_domain.py
+│   │   │   ├── catalog_domain.py
+│   │   │   ├── loan_domain.py
+│   │   │   ├── reservation_domain.py
+│   │   │   └── fine_domain.py
 │   │   │
 │   │   └── repositories/               # 7. DATA REPOSITORY
 │   │       ├── __init__.py
 │   │       ├── db/
 │   │       │   ├── __init__.py
 │   │       │   └── connection.py       # generic connection class
-│   │       ├── base_repository.py      # abstract contract used by business and test fakes
+│   │       ├── base_repository.py      # abstract contract used by domain and test fakes
 │   │       ├── orm_models/             # table mappings; they are not entities
 │   │       ├── migrations/             # Alembic
 │   │       ├── book_repository.py
@@ -218,7 +218,7 @@ library-system/
 │       ├── fakes/                      # in-memory repositories
 │       ├── test_architecture.py        # checks the import rules between layers
 │       └── unit/
-│           ├── business/
+│           ├── domain/
 │           ├── services/
 │           ├── interface/
 │           ├── repositories/
@@ -244,9 +244,9 @@ library-system/
 | Capa | Puede importar |
 |---|---|
 | `interface` | `dto`, `services`, `security` |
-| `services` | `dto`, `library_entities`, `business` |
+| `services` | `dto`, `library_entities`, `domain` |
 | `dto` | nada |
-| `business` | `library_entities`, `repositories`, `security` |
+| `domain` | `library_entities`, `repositories`, `security` |
 | `library_entities` | nada |
 | `repositories` | `library_entities` |
 | `security` | nada de las capas |
@@ -264,7 +264,7 @@ interface/endpoints      checks the permission, receives the message
 services/adapters  orchestrates the use case
    │  translators: DTO -> Entity
    ▼
-business                   applies the rules (RF-11 to RF-13)
+domain                   applies the rules (RF-11 to RF-13)
    ▼
 repositories -> db/connection -> DB   persists
    ▲
@@ -315,7 +315,7 @@ Drivers: `PyMySQL` es Python puro, así que no depende de ruedas compiladas para
 ### 6.1 POO estricta
 
 - Todo comportamiento vive en clases. No hay lógica de negocio en funciones sueltas de módulo.
-- Una clase principal por archivo, con el nombre del archivo en `snake_case` (`LoanBusiness` → `loan_business.py`).
+- Una clase principal por archivo, con el nombre del archivo en `snake_case` (`LoanDomain` → `loan_domain.py`).
 - Dependencias por constructor (inyección). El punto de composición es `main.py`, donde se arman repositorios, lógica de negocio, adapters y endpoints.
 - Los endpoints son clases que exponen un `APIRouter`; cada manejador es un método.
 - Las entidades son ricas: contienen sus reglas y transiciones de estado, y protegen sus invariantes (atributos privados con prefijo `_` y métodos públicos para cambiarlos).
