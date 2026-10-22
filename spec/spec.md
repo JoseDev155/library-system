@@ -1,8 +1,9 @@
 # Especificación: Sistema de Biblioteca
 
-- **Estado:** borrador v0.1 (2026-10-21)
+- **Estado:** borrador v0.3 (2026-10-22)
 - **Documento vivo:** cualquier cambio de comportamiento se edita aquí primero, luego en el código.
-- **Estructura:** sigue la plantilla del curso Hello SDD (contexto, usuarios, historias, requisitos en notación EARS, casos límite, fuera de alcance, criterios de finalización y dudas abiertas), con secciones añadidas para arquitectura, dominio, seguridad y diseño.
+- **Estructura:** sigue la plantilla del curso Hello SDD (contexto, usuarios, historias, requisitos en notación EARS, casos límite, fuera de alcance, criterios de finalización y dudas abiertas), con secciones añadidas para arquitectura, base de datos, reglas del backend, convenciones y carpetas de agentes.
+- **Idioma:** la prosa de este documento está en español. Los nombres de carpetas, archivos, clases, variables y permisos están en inglés (ver sección 7).
 
 ## 1. Contexto
 
@@ -20,46 +21,46 @@ Referencias y restricciones:
 
 ### 2.1 Roles
 
-| Rol | Quién es | Descripción |
+| Rol (`id`) | Quién es | Descripción |
 |---|---|---|
 | `admin` | IT / administración del sistema | Control total: usuarios, roles, configuración, condonación de multas |
 | `dev` | Desarrollo (IT) | Rol técnico: documentación de la API, logs técnicos y métricas. **Sin acceso a datos personales** |
-| `bibliotecario` | Personal de biblioteca | Gestiona catálogo, préstamos, devoluciones y reservas |
-| `caja` | Personal de caja | Cobra multas y emite comprobantes |
-| `docente` | Docentes | Como estudiante, con límites de préstamo más altos |
-| `estudiante` | Estudiantes | Consulta el catálogo, ve sus préstamos y multas, reserva y renueva |
+| `librarian` | Personal de biblioteca (bibliotecario) | Gestiona catálogo, préstamos, devoluciones y reservas |
+| `cashier` | Personal de caja | Cobra multas y emite comprobantes |
+| `teacher` | Docentes | Como estudiante, con límites de préstamo más altos |
+| `student` | Estudiantes | Consulta el catálogo, ve sus préstamos y multas, reserva y renueva |
 
 ### 2.2 Jerarquía
 
-Orden de privilegios sobre los datos de negocio: `admin` > `bibliotecario` > `caja` > `docente` > `estudiante`.
+Orden de privilegios sobre los datos de negocio: `admin` > `librarian` > `cashier` > `teacher` > `student`.
 
 `dev` queda **fuera** de esa escala: es un rol técnico paralelo con acceso mínimo, para que quien desarrolla no lea datos personales en producción (mínimo privilegio).
 
 ### 2.3 Matriz de permisos
 
-Los permisos se resuelven en el servidor a partir del rol (`seguridad/permisos.py`). El token solo lleva el rol.
+Los permisos se resuelven en el servidor a partir del rol (`security/permissions.py`). El token solo lleva el rol.
 
-| Permiso | admin | dev | bibliotecario | caja | docente | estudiante |
+| Permiso | admin | dev | librarian | cashier | teacher | student |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|
-| `catalogo:leer` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `catalogo:gestionar` | ✔ | — | ✔ | — | — | — |
-| `prestamo:crear` | ✔ | — | ✔ | — | — | — |
-| `prestamo:devolver` | ✔ | — | ✔ | — | — | — |
-| `prestamo:ver_propios` | — | — | — | — | ✔ | ✔ |
-| `prestamo:ver_todos` | ✔ | — | ✔ | — | — | — |
-| `prestamo:renovar_propio` | — | — | — | — | ✔ | ✔ |
-| `reserva:crear_propia` | — | — | — | — | ✔ | ✔ |
-| `reserva:gestionar` | ✔ | — | ✔ | — | — | — |
-| `multa:ver_propias` | — | — | — | — | ✔ | ✔ |
-| `multa:ver_todas` | ✔ | — | ✔ | ✔ | — | — |
-| `multa:cobrar` | ✔ | — | — | ✔ | — | — |
-| `multa:condonar` | ✔ | — | — | — | — | — |
-| `usuario:gestionar` | ✔ | — | — | — | — | — |
-| `sistema:docs` | ✔ | ✔ | — | — | — | — |
-| `sistema:auditoria_leer` | ✔ | ✔ (técnica) | — | — | — | — |
-| `reporte:ver` | ✔ | — | ✔ | ✔ (solo caja) | — | — |
+| `catalog:read` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `catalog:manage` | ✔ | — | ✔ | — | — | — |
+| `loan:create` | ✔ | — | ✔ | — | — | — |
+| `loan:return` | ✔ | — | ✔ | — | — | — |
+| `loan:view_own` | — | — | — | — | ✔ | ✔ |
+| `loan:view_all` | ✔ | — | ✔ | — | — | — |
+| `loan:renew_own` | — | — | — | — | ✔ | ✔ |
+| `reservation:create_own` | — | — | — | — | ✔ | ✔ |
+| `reservation:manage` | ✔ | — | ✔ | — | — | — |
+| `fine:view_own` | — | — | — | — | ✔ | ✔ |
+| `fine:view_all` | ✔ | — | ✔ | ✔ | — | — |
+| `fine:collect` | ✔ | — | — | ✔ | — | — |
+| `fine:waive` | ✔ | — | — | — | — | — |
+| `user:manage` | ✔ | — | — | — | — | — |
+| `system:docs` | ✔ | ✔ | — | — | — | — |
+| `system:audit_read` | ✔ | ✔ (técnica) | — | — | — | — |
+| `report:view` | ✔ | — | ✔ | ✔ (solo caja) | — | — |
 
-Decisión de diseño: quien registra el préstamo (`bibliotecario`) no cobra la multa (`caja`), para separar funciones.
+Decisión de diseño: quien registra el préstamo (`librarian`) no cobra la multa (`cashier`), para separar funciones.
 
 ## 3. Historias de usuario
 
@@ -79,130 +80,168 @@ Decisión de diseño: quien registra el préstamo (`bibliotecario`) no cobra la 
 | # | Capa | Responsabilidad | Ubicación |
 |---|---|---|---|
 | 1 | Presentación | Pantallas en el navegador. Conoce los tipos de datos y mensajes del servicio | `frontend/` |
-| 2 | Interfaz de servicio | Lo que se expone: endpoints y tipos de mensajes (Request/Response) | `backend/app/interfaz_servicio/` |
-| 3 | Implementación del servicio | **Adapter** (orquesta cada caso de uso) y **translator** (entidades ↔ tipos de datos) | `backend/app/implementacion_servicio/` |
-| 4 | Tipos de datos | Colección de tipos de datos que viajan hasta la implementación del servicio | `backend/app/tipos_datos/` |
-| 5 | Lógica del negocio | Reglas del sistema; maneja solo entidades | `backend/app/negocio/` |
-| 6 | Entidades del negocio | Objetos del dominio, como **librería independiente** | `libs/biblioteca_entidades/` |
-| 7 | Repositorio de datos | Inserción y extracción en la BD; habla solo con la BD y con `negocio` | `backend/app/repositorio/` |
+| 2 | Interfaz de servicio | Lo que se expone: endpoints y tipos de mensajes (Request/Response) | `backend/app/interface/` |
+| 3 | Implementación del servicio | **Adapter** (orquesta cada caso de uso) y **translator** (entidades ↔ tipos de datos) | `backend/app/services/` |
+| 4 | Tipos de datos | Colección de tipos de datos que viajan hasta la implementación del servicio | `backend/app/dto/` |
+| 5 | Dominio (lógica del negocio) | Reglas del sistema; maneja solo entidades | `backend/app/domain/` |
+| 6 | Entidades del negocio | Objetos del dominio, como **librería independiente** | `libs/library_entities/` |
+| 7 | Repositorio de datos | Inserción y extracción en la BD; habla solo con la BD y con la lógica de negocio | `backend/app/repositories/` |
 
-Transversal: `backend/app/seguridad/` (JWT, hashing, mapa de permisos y limitador). No depende de ninguna capa.
+Transversal: `backend/app/security/` (JWT, hashing, mapa de permisos y limitador). No depende de ninguna capa.
 
 ### 4.2 Estructura de carpetas
 
 ```plaintext
-biblioteca/
-├── AGENTS.md
-├── CLAUDE.md
-├── DESIGN.md
-├── LICENSE.md
-├── NOTICE.md
+library-system/
+├── AGENTS.md                           # common rules for every agent
+├── CLAUDE.md                           # Claude Code: imports AGENTS.md
+├── DESIGN.md                           # visual identity and tokens
+├── LICENSE
+├── NOTICE
 ├── README.md
-├── spec.md
-├── .gitignore                         # incluye CLAUDE.local.md y .claude/settings.local.json
-├── .claude/                           # Claude Code
-│   ├── settings.json
-│   └── rules/
-├── .agents/                           # Antigravity (opcional)
-├── prototipos/                        # exportaciones de Claude Design / Stitch
+├── .gitignore                          # ignores .env, CLAUDE.local.md and .claude/settings.local.json
+├── .claude/                            # Claude Code (reads CLAUDE.md, never .agents/)
+│   ├── settings.json                   # shared permissions
+│   ├── rules/                          # rules scoped by path
+│   │   ├── architecture.md
+│   │   └── conventions.md
+│   └── commands/
+│       └── verify.md                   # /verify runs scripts/verify.sh
+├── .agents/                            # Antigravity: rules and workflows
+│   ├── rules/
+│   │   ├── architecture.md
+│   │   └── conventions.md
+│   ├── workflows/
+│   │   └── verify.md
+│   └── templates/                      # base files for later tasks
+├── .antigravity/                       # Antigravity workspace (not read automatically)
+│   ├── README.md
+│   ├── context/                        # reference material for the IDE
+│   ├── commands/
+│   └── resources/                      # frontend prototypes (Stitch / Claude Design exports)
+├── .github/
+├── .gitlab/
+├── prompts/                            # task prompts, one per task
+├── spec/
+│   └── spec.md                         # this document
+├── scripts/
+│   ├── setup.sh                        # install dependencies
+│   ├── verify.sh                       # lint + tests + coverage + build
+│   ├── install-hooks.sh                # enables the versioned Git hooks
+│   └── hooks/
+│       └── post-commit                 # syncs GitHub -> GitLab after each commit
 │
 ├── libs/
-│   └── biblioteca_entidades/          # 6. ENTIDADES DEL NEGOCIO (librería)
+│   └── library_entities/               # 6. BUSINESS ENTITIES (standalone library)
 │       ├── pyproject.toml
 │       ├── tests/
-│       └── biblioteca_entidades/
-│           ├── __init__.py            # expone las entidades
-│           ├── usuario.py
-│           ├── libro.py
-│           ├── ejemplar.py
-│           ├── prestamo.py
-│           ├── reserva.py
-│           ├── multa.py
-│           └── pago.py
+│       └── library_entities/
+│           ├── __init__.py             # exports the entities
+│           ├── user.py
+│           ├── book.py
+│           ├── book_copy.py
+│           ├── loan.py
+│           ├── reservation.py
+│           ├── fine.py
+│           ├── payment.py
+│           └── audit_log.py
 │
 ├── backend/
-│   ├── pyproject.toml                 # uv; requires-python >= 3.15
+│   ├── pyproject.toml                  # uv; requires-python >= 3.15
 │   ├── uv.lock
-│   ├── .python-version                # 3.15
+│   ├── .python-version                 # 3.15
 │   ├── .env.example
 │   ├── app/
 │   │   ├── __init__.py
-│   │   ├── main.py
-│   │   ├── config.py
+│   │   ├── main.py                     # composition root (flexible)
+│   │   ├── config.py                   # settings (flexible)
 │   │   │
-│   │   ├── seguridad/                 # transversal
+│   │   ├── security/                   # cross-cutting (flexible)
 │   │   │   ├── __init__.py
-│   │   │   ├── jwt.py
-│   │   │   ├── hashing.py             # pwdlib[argon2]
-│   │   │   ├── permisos.py            # mapa rol -> permisos
-│   │   │   └── limitador.py           # rate limit
+│   │   │   ├── jwt.py                  # JWT (PyJWT)
+│   │   │   ├── hashing.py              # pwdlib[argon2]
+│   │   │   ├── permissions.py          # role -> permissions map
+│   │   │   └── rate_limiter.py
 │   │   │
-│   │   ├── interfaz_servicio/         # 2. INTERFAZ DE SERVICIO
+│   │   ├── interface/                  # 2. SERVICE INTERFACE
 │   │   │   ├── __init__.py
 │   │   │   ├── endpoints/
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── auth_endpoint.py
-│   │   │   │   ├── catalogo_endpoint.py
-│   │   │   │   ├── prestamos_endpoint.py
-│   │   │   │   ├── reservas_endpoint.py
-│   │   │   │   ├── multas_endpoint.py
-│   │   │   │   └── usuarios_endpoint.py
-│   │   │   └── mensajes/              # Request / Response
+│   │   │   │   ├── catalog_endpoint.py
+│   │   │   │   ├── loan_endpoint.py
+│   │   │   │   ├── reservation_endpoint.py
+│   │   │   │   ├── fine_endpoint.py
+│   │   │   │   └── user_endpoint.py
+│   │   │   └── messages/               # Request / Response
 │   │   │       ├── __init__.py
-│   │   │       ├── auth_mensajes.py
-│   │   │       ├── prestamos_mensajes.py
-│   │   │       └── multas_mensajes.py
+│   │   │       ├── auth_messages.py
+│   │   │       ├── loan_messages.py
+│   │   │       └── fine_messages.py
 │   │   │
-│   │   ├── implementacion_servicio/   # 3. IMPLEMENTACIÓN DEL SERVICIO
+│   │   ├── services/                   # 3. SERVICE IMPLEMENTATION
 │   │   │   ├── __init__.py
 │   │   │   ├── adapters/
 │   │   │   │   ├── __init__.py
-│   │   │   │   ├── prestamos_adapter.py
-│   │   │   │   └── multas_adapter.py
+│   │   │   │   ├── loan_adapter.py
+│   │   │   │   └── fine_adapter.py
 │   │   │   └── translators/
 │   │   │       ├── __init__.py
-│   │   │       ├── libro_translator.py
-│   │   │       ├── prestamo_translator.py
-│   │   │       └── multa_translator.py
+│   │   │       ├── book_translator.py
+│   │   │       ├── loan_translator.py
+│   │   │       └── fine_translator.py
 │   │   │
-│   │   ├── tipos_datos/               # 4. TIPOS DE DATOS (DTOs)
+│   │   ├── dto/                        # 4. DATA TYPES (DTOs)
 │   │   │   ├── __init__.py
-│   │   │   ├── libro_dto.py
-│   │   │   ├── prestamo_dto.py
-│   │   │   └── multa_dto.py
+│   │   │   ├── book_dto.py
+│   │   │   ├── loan_dto.py
+│   │   │   └── fine_dto.py
 │   │   │
-│   │   ├── negocio/                   # 5. LÓGICA DEL NEGOCIO
+│   │   ├── domain/                    # 5. DOMAIN (business logic)
 │   │   │   ├── __init__.py
-│   │   │   ├── auth_negocio.py
-│   │   │   ├── catalogo_negocio.py
-│   │   │   ├── prestamos_negocio.py
-│   │   │   ├── reservas_negocio.py
-│   │   │   └── multas_negocio.py
+│   │   │   ├── auth_domain.py
+│   │   │   ├── catalog_domain.py
+│   │   │   ├── loan_domain.py
+│   │   │   ├── reservation_domain.py
+│   │   │   └── fine_domain.py
 │   │   │
-│   │   └── repositorio/               # 7. REPOSITORIO DE DATOS
+│   │   └── repositories/               # 7. DATA REPOSITORY
 │   │       ├── __init__.py
-│   │       ├── conexion.py            # clase genérica de conexión
-│   │       ├── modelos_orm/           # tablas (mapeo); no son entidades
-│   │       ├── migraciones/
-│   │       ├── libro_repositorio.py
-│   │       ├── prestamo_repositorio.py
-│   │       └── multa_repositorio.py
+│   │       ├── db/
+│   │       │   ├── __init__.py
+│   │       │   └── connection.py       # generic connection class
+│   │       ├── base_repository.py      # abstract contract used by domain and test fakes
+│   │       ├── orm_models/             # table mappings; they are not entities
+│   │       ├── migrations/             # Alembic
+│   │       ├── book_repository.py
+│   │       ├── loan_repository.py
+│   │       └── fine_repository.py      # one repository per aggregate
 │   └── tests/
-│       ├── test_arquitectura.py       # verifica las reglas de importación entre capas
-│       └── ...
+│       ├── conftest.py
+│       ├── fakes/                      # in-memory repositories
+│       ├── test_architecture.py        # checks the import rules between layers
+│       └── unit/
+│           ├── domain/
+│           ├── services/
+│           ├── interface/
+│           ├── repositories/
+│           └── security/
 │
-└── frontend/                          # 1. PRESENTACIÓN
-    ├── package.json                   # devEngines: bun
-    ├── bunfig.toml                    # equivalente de .npmrc
-    ├── .node-version                  # Node para Vite+
+└── frontend/                           # 1. PRESENTATION
+    ├── package.json                    # Bun only; packageManager and trustedDependencies
+    ├── bunfig.toml                     # exact versions, release age gate (replaces .npmrc)
+    ├── .bun-version                    # Bun version pin (replaces .node-version)
+    ├── bun.lock                        # text lockfile, versioned
     ├── vite.config.js
     ├── index.html
+    ├── tests/
+    │   └── setup.js                    # happy-dom registration for bun test
     └── src/
-        ├── api/                       # llamadas a la interfaz de servicio
+        ├── api/                        # calls to the service interface
         ├── components/
         ├── pages/
         ├── hooks/
-        ├── styles/                    # tokens de DESIGN.md
+        ├── styles/                     # tokens from DESIGN.md
         └── main.jsx
 ```
 
@@ -210,96 +249,183 @@ biblioteca/
 
 | Capa | Puede importar |
 |---|---|
-| `interfaz_servicio` | `tipos_datos`, `implementacion_servicio`, `seguridad` |
-| `implementacion_servicio` | `tipos_datos`, `biblioteca_entidades`, `negocio` |
-| `tipos_datos` | nada |
-| `negocio` | `biblioteca_entidades`, `repositorio`, `seguridad` |
-| `biblioteca_entidades` | nada |
-| `repositorio` | `biblioteca_entidades` |
-| `seguridad` | nada de las capas |
+| `interface` | `dto`, `services`, `security` |
+| `services` | `dto`, `library_entities`, `domain` |
+| `dto` | nada |
+| `domain` | `library_entities`, `repositories`, `security` |
+| `library_entities` | nada |
+| `repositories` | `library_entities` |
+| `security` | nada de las capas |
 
-`tests/test_arquitectura.py` recorre los imports (con `ast`) y falla si alguna capa importa algo fuera de su fila.
+`tests/test_architecture.py` recorre los imports (con `ast`) y falla si alguna capa importa algo fuera de su fila.
 
 ### 4.4 Flujo de una petición (préstamo)
 
 ```plaintext
 Frontend (pages -> api)
-   │  RegistrarPrestamoRequest (mensaje) con tipos de datos
+   │  RegisterLoanRequest (message) with data types
    ▼
-interfaz_servicio/endpoints      valida el permiso, recibe el mensaje
+interface/endpoints      checks the permission, receives the message
    ▼
-implementacion_servicio/adapters orquesta el caso de uso
-   │  translators: DTO -> Entidad
+services/adapters  orchestrates the use case
+   │  translators: DTO -> Entity
    ▼
-negocio                          aplica las reglas (RF-11 a RF-13)
+domain                   applies the rules (RF-11 to RF-13)
    ▼
-repositorio -> conexion -> BD    guarda
+repositories -> db/connection -> DB   persists
    ▲
-   │  Entidad -> DTO (translator) -> Response -> Frontend
+   │  Entity -> DTO (translator) -> Response -> Frontend
 ```
 
-### 4.5 Base de datos y ORM
+## 5. Base de datos y ORM
 
-`repositorio/conexion.py` es una clase genérica: el resto del sistema no sabe qué motor hay debajo. Motores soportados:
+### 5.1 Motores soportados
 
-| Prioridad | Motor | Driver | URL de SQLAlchemy |
-|---|---|---|---|
-| Principal | PostgreSQL | `psycopg` 3 | `postgresql+psycopg://` |
-| Secundaria | MySQL | `PyMySQL` | `mysql+pymysql://` |
-| Secundaria | MariaDB | `PyMySQL` | `mariadb+pymysql://` |
+| Motor | Rol | Driver |
+|---|---|---|
+| PostgreSQL | Principal | `psycopg[binary]` (`postgresql+psycopg://`) |
+| MySQL | Secundario | `PyMySQL` (`mysql+pymysql://`) |
+| MariaDB | Secundario | `PyMySQL` (`mariadb+pymysql://`) |
 
-ORM elegido: **SQLAlchemy 2.1** (estilo 2.0: `DeclarativeBase`, `Mapped[]` y `select()`), con **Alembic** para las migraciones en `repositorio/migraciones/`.
+SQLite en memoria se usa **solo en pruebas unitarias** del repositorio; no es un motor soportado en producción.
+
+### 5.2 ORM elegido: SQLAlchemy 2.1 + Alembic
+
+Dependencia: `sqlalchemy>=2.1,<2.2`, con **Alembic** para migraciones.
 
 Por qué SQLAlchemy:
 
-- Soporta de forma oficial PostgreSQL, MySQL y MariaDB con la misma API, y cada motor tiene su dialecto propio.
-- Es el ORM más usado del ecosistema Python, con mantenimiento activo desde hace años (la serie 2.1 está publicada y exige Python 3.11 o superior) y documentación extensa.
-- Alembic es de la misma organización y es la herramienta estándar de migraciones para SQLAlchemy.
-- Los modelos van en `repositorio/modelos_orm/` y no se mezclan con las entidades (sección 5), de modo que SQLAlchemy queda confinado a la capa 7.
+- **Cubre los tres motores** con dialectos propios (PostgreSQL, MySQL y MariaDB), de modo que un solo repositorio sirve para todos y la conexión sigue siendo una clase genérica que solo cambia de URL.
+- **Soporte de Python 3.15:** la versión 2.1.5 publica ruedas para CPython 3.15, incluida Windows x86-64, y `psycopg-binary` 3.3.6 también.
+- **Mapeo imperativo:** permite mapear clases simples a tablas sin que hereden de una base del ORM. Así las entidades de `library_entities` siguen siendo puras (sin importar SQLAlchemy) y el mapeo vive en `repositories/orm_models/`. Es lo que pide el tema 4.
+- Es el ORM más extendido del ecosistema Python, con documentación extensa y mantenimiento activo.
 
 Alternativas descartadas:
 
-- **SQLModel**: es una capa sobre SQLAlchemy que mezcla modelo de tabla y esquema Pydantic, justo lo que la arquitectura separa. Además, la comunidad ha señalado poca actividad reciente en el proyecto.
-- **Tortoise ORM, ormar**: el soporte de MariaDB y de migraciones es menos maduro y su comunidad es mucho más pequeña.
+- **SQLModel:** une entidad, tabla y modelo Pydantic en una sola clase, que es lo contrario de separar entidades y repositorio.
+- **Tortoise ORM, Peewee, Piccolo:** ecosistemas más pequeños o con menos soporte de migraciones y de mapeo imperativo; Piccolo además se centra en PostgreSQL y SQLite.
+- **Django ORM:** acoplado a Django.
 
-Reglas de portabilidad (para que el mismo código corra en los tres motores):
+Drivers: `PyMySQL` es Python puro, así que no depende de ruedas compiladas para 3.15. Se evita `mysqlclient` y el conector oficial de MariaDB porque exigen compilación o bibliotecas del sistema.
 
-- Nada de SQL crudo ni de tipos exclusivos de un motor (por ejemplo `JSONB`, `ARRAY`) en `modelos_orm/`.
-- Las restricciones de unicidad y de claves foráneas se declaran en el modelo, no en la migración a mano.
-- Las fechas se guardan en UTC (RNF-7). Se usa `DateTime(timezone=True)`, y en MySQL y MariaDB se normaliza a UTC al leer.
-- Cada motor se prueba en integración con el mismo conjunto de pruebas del repositorio. PostgreSQL es el motor de referencia; los otros dos no deben romper esas pruebas.
-- El motor se elige por la variable de entorno `DATABASE_URL`, nunca por código.
+### 5.3 Reglas de portabilidad
 
-Compatibilidad con Python 3.15: `psycopg` y `PyMySQL` son paquetes de Python puro (psycopg usa `libpq` del sistema, sin extensión propia en C en su modo básico), lo que reduce el riesgo; SQLAlchemy 2.1 se instala sin compilar. Aun así, antes de fijar versiones hay que verificar con `uv sync` en 3.15 y revisar los clasificadores de cada paquete (ver D-7).
+- `DatabaseConnection` (en `repositories/db/connection.py`) recibe la URL desde `config.py`, crea el `Engine` y entrega sesiones. No hay código específico de un motor fuera de `connection.py` y de `orm_models/`.
+- Solo tipos genéricos de SQLAlchemy (`Uuid`, `Numeric(10, 2)` para dinero, `DateTime`). Las fechas se guardan en UTC; MySQL y MariaDB no guardan zona horaria, por lo que se guarda UTC "ingenuo" y se convierte en la capa de implementación.
+- MySQL y MariaDB con InnoDB y `utf8mb4`.
+- **Sin índices parciales:** MySQL y MariaDB no los soportan. La regla "un ejemplar no se presta dos veces" se aplica con bloqueo de fila (`with_for_update()`) sobre el ejemplar dentro de la transacción, que funciona en los tres motores.
+- Las migraciones se prueban en los tres motores antes de una versión.
 
-## 5. Modelo de dominio
+## 6. Reglas del backend
 
-Las entidades son clases puras en `libs/biblioteca_entidades/`: sin SQL, sin FastAPI, sin ORM. Los modelos de tablas viven en `repositorio/modelos_orm/` y el repositorio convierte entre ambos.
+### 6.1 POO estricta
+
+- Todo comportamiento vive en clases. No hay lógica de negocio en funciones sueltas de módulo.
+- Una clase principal por archivo, con el nombre del archivo en `snake_case` (`LoanDomain` → `loan_domain.py`).
+- Dependencias por constructor (inyección). El punto de composición es `main.py`, donde se arman repositorios, lógica de negocio, adapters y endpoints.
+- Los endpoints son clases que exponen un `APIRouter`; cada manejador es un método.
+- Las entidades son ricas: contienen sus reglas y transiciones de estado, y protegen sus invariantes (atributos privados con prefijo `_` y métodos públicos para cambiarlos).
+- Los repositorios implementan un contrato abstracto (`BaseRepository`, con `abc.ABC`), de modo que las pruebas usan repositorios en memoria que respetan el mismo contrato.
+- Composición antes que herencia. Los mensajes y DTOs son modelos Pydantic sin comportamiento (solo datos).
+- Anotaciones de tipo en toda la API pública.
+
+### 6.2 Zonas flexibles
+
+`security/`, `config.py` y `main.py` pueden usar funciones y objetos de módulo cuando FastAPI lo pide (por ejemplo, dependencias `Depends`, un objeto de configuración o una fábrica de aplicación). Fuera de ahí, aplica 6.1.
+
+### 6.3 Pruebas unitarias con pytest
+
+- Todas las pruebas unitarias se escriben en `backend/tests/`, con la estructura de `tests/unit/` reflejando las capas. La librería de entidades tiene sus propias pruebas en `libs/library_entities/tests/`.
+- Herramienta: `pytest` con `pytest-cov`.
+- **Cobertura mínima: 80%** del código, tanto en `app/` como en `library_entities/`. Si baja del umbral, la ejecución falla (`--cov-fail-under=80`).
+- Las pruebas unitarias no usan red ni un motor de BD real: la lógica de negocio se prueba con repositorios en memoria (`tests/fakes/`) y los repositorios con SQLite en memoria.
+- Las pruebas de integración contra PostgreSQL, MySQL y MariaDB van marcadas con `@pytest.mark.integration` y no cuentan para el umbral.
+- Ciclo de trabajo: implementar, ejecutar `uv run pytest`, corregir y repetir hasta que todo pase y la cobertura sea de al menos 80%.
+
+## 7. Convenciones
+
+- **Inglés** en variables, clases, funciones, archivos, carpetas y mensajes de commit. Los mensajes de commit van en modo imperativo y con un asunto corto (`Add loan renewal rule`).
+- **Español** solo en la prosa de los documentos (`spec.md`, `AGENTS.md`, `DESIGN.md`, reglas y flujos de los agentes) y en los textos que ve el usuario final en la interfaz.
+- **Comentarios bilingües:** primero en inglés y luego en español, como dos comentarios seguidos, y solo cuando son necesarios para entender el código (una regla no obvia, una decisión o un riesgo). No se comenta lo que el código ya dice.
+
+```python
+# EN: The fine uses the rate in force on the return date, not on the loan date.
+# ES: La multa usa la tarifa vigente el día de la devolución, no el del préstamo.
+```
+
+```javascript
+// EN: The token is refreshed only once per request burst.
+// ES: El token se renueva solo una vez por ráfaga de peticiones.
+```
+
+- PEP 8 en Python (Ruff) y ES2026 en JavaScript.
+- Lazy imports (PEP 810) a nivel de módulo y solo para dependencias pesadas; reglas en `AGENTS.md`.
+
+## 8. Modelo de dominio
+
+Las entidades son clases puras en `libs/library_entities/`: sin SQL, sin FastAPI, sin ORM. Los modelos de tablas viven en `repositories/orm_models/` y el repositorio convierte entre ambos con mapeo imperativo.
 
 | Entidad | Atributos principales | Reglas propias |
 |---|---|---|
-| `Usuario` | id, correo_institucional (único), nombre, rol, activo | Un usuario inactivo no inicia sesión ni pide préstamos |
-| `Libro` | id, isbn (único, opcional), titulo, autores, categoria, editorial, anio | El ISBN, si existe, es único |
-| `Ejemplar` | id, libro_id, codigo_inventario (único), estado | Transiciones: disponible → prestado → disponible; disponible → reservado; cualquiera → en_reparacion o baja. Un ejemplar prestado no se vuelve a prestar |
-| `Prestamo` | id, ejemplar_id, usuario_id, fecha_prestamo, fecha_vencimiento, fecha_devolucion, renovaciones, estado | `renovar()` respeta el máximo de renovaciones; `dias_de_retraso(hoy)` |
-| `Reserva` | id, libro_id, usuario_id, creada_en, estado, apartada_hasta | Estados: en_cola, apartada, cumplida, cancelada, expirada |
-| `Multa` | id, prestamo_id, usuario_id, dias_retraso, monto, estado, motivo_condonacion | Estados: pendiente, pagada, condonada. `pagar()` y `condonar(motivo)` |
-| `Pago` | id, multa_id, cajero_id, monto, folio (único), fecha | Un folio no se repite |
-| `RegistroAuditoria` | id, usuario_id, accion, entidad, entidad_id, fecha | Solo se agrega; nunca se edita |
+| `Faculty` | code (3 dígitos), name | Catálogo cerrado de facultades y unidades (sección 8.3) |
+| `User` | id (identificador universitario, sección 8.2), institutional_email (único), name, role, faculty_code, active | Un usuario inactivo no inicia sesión ni pide préstamos. Con multas pendientes queda bloqueado para pedir préstamos, pero sigue activo |
+| `Book` | id, isbn (único, opcional), title, authors, category (materia o tema), faculty_code (área), publisher, edition, year, call_number (signatura) | El ISBN, si existe, es único |
+| `BookCopy` | id, book_id, inventory_code (único), status, circulation, location_floor, location_shelf | Estados: `AVAILABLE`, `LOANED`, `RESERVED`, `UNDER_REPAIR`, `WITHDRAWN`. `circulation` es `LOANABLE` (préstamo a domicilio) o `REFERENCE_ONLY` (solo consulta en sala); un ejemplar `REFERENCE_ONLY` no se presta. Un ejemplar prestado no se vuelve a prestar |
+| `Loan` | id, copy_id, user_id, loaned_by, loaned_at, due_at, returned_at, renewals, status | `renew()` respeta el máximo de renovaciones; `days_late(today)`. Estados: `ACTIVE`, `RETURNED` (el vencido se calcula con `due_at`) |
+| `Reservation` | id, book_id, user_id, copy_id, created_at, status, held_until | Estados: `QUEUED`, `HELD`, `FULFILLED`, `CANCELLED`, `EXPIRED` |
+| `Fine` | id, loan_id, user_id, days_late, rate_per_day, amount, status, waiver_reason, waived_by | Estados: `PENDING`, `PAID`, `WAIVED`. `pay()` y `waive(reason)`. Conserva la tarifa vigente al devolver |
+| `Receipt` | id, receipt_number (único), cashier_id, method, total, paid_at | Comprobante de un cobro en caja; puede cubrir varias multas. `total` es la suma de sus pagos. `method`: `CASH`, `CARD` (voucher del POS bancario) o `TRANSFER`; solo se registra, el sistema no procesa pagos |
+| `Payment` | id, receipt_id, fine_id (único), amount | Pago de una multa dentro de un comprobante. Una multa se paga una sola vez |
+| `AuditLog` | id, user_id, action, entity, entity_id, created_at | Solo se agrega; nunca se edita |
 
-### 5.1 Parámetros configurables
+### 8.1 Parámetros configurables
+
+Moneda: todos los importes (multas, pagos y comprobantes) están en **dólares estadounidenses (USD)**, con dos decimales.
 
 Valores por defecto **supuestos**: se validan con la biblioteca antes de usarlos y viven en configuración, no en el código.
 
-| Parámetro | Estudiante | Docente |
+| Parámetro | `student` | `teacher` |
 |---|---|---|
-| Préstamos simultáneos máximos | 3 | 5 |
-| Plazo de préstamo (días) | 7 | 15 |
-| Renovaciones máximas | 1 | 2 |
-| Horas que se aparta una reserva | 48 | 48 |
-| Multa por día de retraso | definir | definir |
+| `max_active_loans` | 3 | 5 |
+| `loan_days` | 7 | 15 |
+| `max_renewals` | 1 | 2 |
+| `reservation_hold_hours` | 48 | 48 |
+| `fine_per_day` | definir | definir |
 
-## 6. Requisitos funcionales (EARS)
+### 8.2 Identificador universitario
+
+El `id` de `User` es el carnet universitario, con el formato `AAAA-II-FFF-NN`:
+
+| Parte | Significado |
+|---|---|
+| `AAAA` | Año de ingreso (estudiantes y docentes) o de contratación (personal) |
+| `II` | Iniciales de los dos apellidos, en mayúsculas y sin acentos |
+| `FFF` | Código de la facultad o unidad (sección 8.3) |
+| `NN` | Correlativo de dos dígitos que desempata cuando coinciden las tres partes anteriores; empieza en `01` |
+
+Ejemplo: Juan Armando Pérez Márquez, que ingresó en 2024 a Ingeniería y Tecnología (`101`), tiene el id `2024-PM-101-01`; si ese año otra persona de Ingeniería con las mismas iniciales se matricula después, recibe `2024-PM-101-02`. Si la persona tiene un solo apellido, `II` usa la inicial de ese apellido seguida de `X`.
+
+La combinación de año, iniciales y facultad puede repetirse entre personas distintas, por eso todos los carnets llevan correlativo, empezando en `01`, y así comparten el mismo formato. El sistema asigna el id al registrar a la persona; el id es único, no cambia nunca (tampoco si la persona cambia de facultad) y es lo que se escanea o escribe en el mostrador y en caja. Si una combinación llegara a superar los 99 correlativos, se ampliaría a tres dígitos.
+
+### 8.3 Facultades y unidades
+
+Códigos supuestos para una universidad mediana (se validan con la universidad). Son datos de la tabla `faculties` y también se usan como área de los libros.
+
+| Código | Facultad o unidad |
+|---|---|
+| `101` | Ingeniería y Tecnología |
+| `102` | Ciencias Exactas (Matemáticas y Física) |
+| `201` | Ciencias de la Salud |
+| `301` | Ciencias Económicas y Administrativas (Economía y Negocios) |
+| `302` | Ciencias Jurídicas (Derecho) |
+| `401` | Ciencias Sociales |
+| `402` | Humanidades y Artes (Humanidades y Filosofía) |
+| `403` | Ciencias de la Educación |
+| `501` | Arquitectura y Diseño |
+| `601` | Ciencias Agropecuarias y Ambientales |
+| `900` | Personal administrativo y de servicios (biblioteca, caja, TI) |
+
+## 9. Requisitos funcionales (EARS)
 
 Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras…* (estado) · *Si…, entonces…* (situación no deseada) · *Donde…* (opción activada).
 
@@ -315,11 +441,11 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 ### Autorización
 
 - **RF-7** Cuando llegue una solicitud autenticada, el sistema deberá comprobar el permiso que exige el endpoint según el rol del usuario, y si no lo tiene, deberá responder 403.
-- **RF-8** Mientras el entorno sea producción, el sistema no deberá publicar `/docs`, `/redoc` ni `/openapi.json`. Donde el entorno sea de desarrollo, solo deberán ser accesibles con el permiso `sistema:docs`.
+- **RF-8** Mientras el entorno sea producción, el sistema no deberá publicar `/docs`, `/redoc` ni `/openapi.json`. Donde el entorno sea de desarrollo, solo deberán ser accesibles con el permiso `system:docs`.
 
 ### Catálogo
 
-- **RF-9** Cuando un usuario autenticado busque por título, autor, ISBN o categoría, el sistema deberá devolver resultados paginados con el número de ejemplares disponibles.
+- **RF-9** Cuando un usuario autenticado busque por título, autor, ISBN o materia, el sistema deberá devolver resultados paginados con el número de ejemplares disponibles y deberá permitir filtrar por facultad o área y ordenar por fecha de ingreso, título o autor.
 - **RF-10** Cuando un bibliotecario cree un libro, el sistema deberá validar que el ISBN, si se informa, no exista y deberá permitir registrar uno o más ejemplares con código de inventario único.
 
 ### Préstamos
@@ -336,7 +462,7 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 
 ### Multas y pagos
 
-- **RF-17** Cuando caja registre el pago de una multa, el sistema deberá marcarla como pagada y emitir un comprobante con folio único.
+- **RF-17** Cuando caja registre el cobro de una o varias multas de un usuario, el sistema deberá marcar cada multa como pagada y emitir un único comprobante con número único, con el total y la forma de pago, o no registrar nada si alguno de los pagos falla.
 - **RF-18** Cuando un administrador condone una multa, el sistema deberá exigir un motivo y registrar quién la condonó.
 
 ### Usuarios y auditoría
@@ -344,21 +470,70 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 - **RF-19** Cuando un administrador cambie el rol o desactive a un usuario, el sistema deberá revocar todos los tokens de refresco de ese usuario.
 - **RF-20** El sistema deberá registrar en auditoría toda operación de escritura (quién, qué y cuándo), sin guardar contraseñas ni tokens.
 
-## 7. Requisitos no funcionales y seguridad
+## 10. Requisitos no funcionales y seguridad
 
-- **RNF-1 Exposición.** El backend no es accesible directamente desde internet: escucha en red interna detrás de un proxy inverso, y la base de datos no tiene exposición externa.
-- **RNF-2 JWT.** Algoritmo HS256 con un secreto aleatorio de al menos 32 bytes en variable de entorno. Claims: `sub`, `rol`, `iat`, `exp`, `jti`. Acceso de 15 minutos. Refresco de 7 días con rotación en cada uso, guardado como hash en la BD; si se reutiliza uno ya rotado, se revoca toda la sesión.
+- **RNF-1 Exposición.** El backend no es accesible directamente desde internet: escucha en red interna (o en `127.0.0.1` en desarrollo) detrás de un proxy inverso, y la base de datos no tiene exposición externa.
+- **RNF-2 JWT.** Algoritmo HS256 con un secreto aleatorio de al menos 32 bytes en variable de entorno. Claims: `sub`, `role`, `iat`, `exp`, `jti`. Acceso de 15 minutos. Refresco de 7 días con rotación en cada uso, guardado como hash en la BD; si se reutiliza uno ya rotado, se revoca toda la sesión.
 - **RNF-3 Rate limit.** Login: 5 intentos por minuto por IP y usuario. Resto de la API: 120 solicitudes por minuto por usuario autenticado. Respuesta 429 con `Retry-After`.
 - **RNF-4 Contraseñas.** Argon2id con `pwdlib[argon2]` con parámetros iguales o superiores al mínimo de OWASP (19 MiB de memoria, 2 iteraciones, paralelismo 1), ajustados midiendo en el servidor.
 - **RNF-5 Datos personales.** Los logs no contienen contraseñas, tokens ni datos personales. El rol `dev` no accede a datos personales.
 - **RNF-6 CORS.** Orígenes permitidos explícitos; nunca `*`.
 - **RNF-7 Fechas.** Se guardan en UTC y se muestran en `America/El_Salvador`.
-- **RNF-8 Calidad.** Python con PEP 8 (Ruff) y JavaScript con ES2026. Cada RF tiene al menos una prueba.
+- **RNF-8 Calidad.** Python con PEP 8 (Ruff) y JavaScript con ES2026. Cobertura mínima de 80% en el backend y en la librería de entidades (sección 6.3). Cada RF tiene al menos una prueba.
 - **RNF-9 Accesibilidad.** WCAG 2.2 AA. En las pantallas de caja: texto de al menos 18 px, botones de al menos 48 px y el flujo de cobro en 3 pantallas o menos (supuesto a validar con los cajeros).
+- **RNF-10 Portabilidad de BD.** Mismo código para PostgreSQL, MySQL y MariaDB (sección 5.3).
+- **RNF-11 Cadena de suministro.** Dependencias con versión exacta, antigüedad mínima de publicación y sin scripts de instalación no autorizados (sección 11.3).
 
-## 8. Interfaz y diseño
+## 11. Frontend (Bun)
 
-Identidad visual y tokens en `DESIGN.md`. Prototipos exportados en `prototipos/`.
+### 11.1 Herramientas
+
+| Función | Herramienta |
+|---|---|
+| Gestor de paquetes y runtime de scripts | Bun |
+| Servidor de desarrollo y build | Vite, ejecutado con el runtime de Bun (`bunx --bun vite`) |
+| Lint y formato | Oxlint y Oxfmt, ejecutados con Bun |
+| Pruebas | `bun test` con happy-dom |
+| UI | React con JavaScript (JSX) |
+
+**Vite+ (`vp`) no se usa.** Vite+ acepta Bun como gestor de paquetes (`devEngines.packageManager`), pero su runtime gestionado es Node.js: los demás runtimes no los administra. Por eso no puede ejecutarse de forma directa y exclusiva con Bun. Para cumplir la restricción de "solo Bun" se usan por separado los componentes de ese toolchain (Vite, Oxlint y Oxfmt), ejecutados con el runtime de Bun. Si en el futuro Vite+ soporta Bun como runtime, se puede volver a evaluar.
+
+Versión de referencia: Bun 1.4.3.
+
+### 11.2 Comandos
+
+```bash
+bun install            # install from bun.lock
+bun ci                 # CI: exact lockfile, fails on mismatch
+bun add -E <package>   # add a dependency with the exact version
+bun add -E -d <package>  # same, as a dev dependency
+bun run dev            # development server
+bun run lint           # Oxlint
+bun run test           # bun test
+bun run build          # production build
+```
+
+### 11.3 Seguridad de dependencias (equivalencias con Node.js + pnpm)
+
+| Con Node.js + pnpm | Con Bun |
+|---|---|
+| `save-exact=true` en `.npmrc` y `pnpm add -E` | `exact = true` en `bunfig.toml` y `bun add -E` |
+| `.node-version` | `.bun-version` y `"packageManager": "bun@1.4.3"` en `package.json`. Bun no exige ninguno de los dos; sirven como fijación de versión para CI y gestores de versiones |
+| `pnpm install --frozen-lockfile` en CI | `bun ci` (o `bun install --frozen-lockfile`) |
+| Scripts de dependencias bloqueados salvo lista autorizada | Bun no ejecuta los scripts de instalación de las dependencias; solo los de `trustedDependencies` en `package.json`, que aquí queda vacío |
+| `minimumReleaseAge` (en minutos, pnpm 10.16 o superior) | `minimumReleaseAge` en `bunfig.toml`, **en segundos** (259200 = 3 días) |
+| `pnpm-lock.yaml` | `bun.lock` (texto), que se versiona |
+
+Notas:
+
+- La unidad de `minimumReleaseAge` cambia entre pnpm (minutos) y Bun (segundos).
+- Una versión exacta pedida (`paquete@1.2.3`) también respeta esa antigüedad mínima, así que un parche urgente de menos de 3 días se instala bajando el valor de forma temporal y deliberada.
+- `minimumReleaseAgeExcludes` en `bunfig.toml` permite exceptuar un paquete o una versión exacta, sin bajar el valor global.
+- Bun ofrece una API de escáner de seguridad para integrar un servicio de análisis; elegir uno queda como duda abierta (D-10).
+
+## 12. Interfaz y diseño
+
+Identidad visual y tokens en `DESIGN.md`. Los prototipos exportados van en `.antigravity/resources/`.
 
 Pantallas del alcance v1:
 
@@ -372,18 +547,59 @@ Pantallas del alcance v1:
 
 Principio de diseño: pocas decisiones por pantalla, botones grandes y mensajes claros en español, pensados para personal de caja de mayor edad.
 
-## 9. Casos límite
+### 12.1 Qué entra de los prototipos
 
-- Dos bibliotecarios prestan el mismo ejemplar a la vez: la transacción y una restricción en la BD deben dejar que gane solo uno.
+Los prototipos de `.antigravity/resources/` (exportados de Stitch) son referencia visual. Lo que muestran y la spec no cubre **no** entra en v1; el prototipo se adapta a la spec al implementar el frontend, no al revés.
+
+Entra en la spec (ya reflejado en la sección 8):
+
+- Carnet universitario como identificador y criterio de búsqueda de personas (`User.id`).
+- Facultad o unidad del usuario, y área de los libros como filtro del catálogo.
+- Edición, signatura (`call_number`) y ubicación física (piso y estantería) del libro y del ejemplar.
+- Ejemplares de solo consulta (`REFERENCE_ONLY`), mostrados como "Disponible solo consulta".
+- Forma de pago en caja (`CASH`, `CARD`, `TRANSFER`), solo como dato del comprobante.
+- Tarifa por día guardada en cada multa y bibliotecario que registra el préstamo.
+- Estado "bloqueado por mora" en caja y mostrador, derivado de las multas pendientes (RF-12).
+- Totales de usuarios y ejemplares por estado, calculados con consultas; no son columnas.
+
+Queda fuera de v1 (se quita o se oculta del prototipo):
+
+- Recursos digitales, préstamo interbibliotecario y "Solicitar compra".
+- Campana de notificaciones.
+- Recuperar contraseña por autoservicio: el enlace se cambia por «Contacta a la Dirección de Biblioteca» (D-8).
+- Exportar el catálogo, reportes y estado "suspendido" distinto de "inactivo".
+- Atajos de teclado y escáner del mostrador: no cambian la spec, pero el escáner se trata como teclado que escribe el código de inventario o el carnet.
+
+Al implementar hay que corregir también los textos de los prototipos que no corresponden: nombre de la universidad, correo y teléfono de contacto, y los datos de ejemplo.
+
+## 13. Carpetas de agentes
+
+Cada herramienta lee su propia carpeta. Lo común está en `AGENTS.md` y `spec/spec.md`; las carpetas de agentes solo concretan lo específico de cada herramienta y no redefinen reglas.
+
+| Carpeta o archivo | Quién lo lee | Contenido |
+|---|---|---|
+| `AGENTS.md` | Varias herramientas, incluida Antigravity | Instrucciones comunes del repo |
+| `CLAUDE.md` | Claude Code | Importa `AGENTS.md` y añade notas específicas |
+| `.claude/` | Claude Code | `settings.json` (permisos), `rules/` (reglas por ruta) y `commands/` (como `/verify`) |
+| `.agents/` | Antigravity (Claude Code **no** la lee) | `rules/`, `workflows/` y `templates/` (archivos base para tareas futuras) |
+| `.antigravity/` | Nadie la lee de forma automática: es una carpeta de trabajo del repo | `README.md` con las notas del IDE, `context/` (p. ej. `database.md`, borrador de tablas y SQL), `commands/` y `resources/` con los prototipos del frontend (exportaciones de Stitch o Claude Design) |
+| `scripts/` | Todos | `setup.sh` y `verify.sh` (mismas comprobaciones), `install-hooks.sh` y `hooks/post-commit` (sincronización GitHub → GitLab) |
+
+Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan.
+
+## 14. Casos límite
+
+- Dos bibliotecarios prestan el mismo ejemplar a la vez: el bloqueo de fila sobre el ejemplar dentro de la transacción deja que gane solo uno.
 - Devolución de un ejemplar que no está prestado: se rechaza sin cambiar estados.
-- Vencimiento que cae en día no hábil: se define en la dudas abiertas D-4.
+- Vencimiento que cae en día no hábil: se define en las dudas abiertas (D-4).
 - El rol de un usuario cambia con un token de acceso todavía vigente: el token solo vive 15 minutos y RF-19 revoca los refrescos.
 - La tarifa de multa cambia después de un retraso: la multa conserva la tarifa vigente al momento de la devolución.
 - Usuario desactivado con préstamos activos: los préstamos siguen su curso y no puede pedir nuevos.
 - El mismo usuario reserva dos veces el mismo libro: se rechaza la segunda.
 - ISBN duplicado o con formato inválido: se rechaza con un mensaje que indique cuál es el problema.
+- Cambio de motor de BD con datos existentes: no está soportado en caliente; requiere exportar e importar.
 
-## 10. Fuera de alcance (v1)
+## 15. Fuera de alcance (v1)
 
 - Lectura de recursos digitales (PDF o libros electrónicos).
 - Pagos en línea.
@@ -391,24 +607,33 @@ Principio de diseño: pocas decisiones por pantalla, botones grandes y mensajes 
 - Aplicación móvil.
 - Notificaciones por correo o mensajería.
 - Importación masiva de catálogo.
+- Recursos digitales, préstamo interbibliotecario, solicitud de compra y exportación del catálogo.
+- Recuperación de contraseña por autoservicio.
 
-## 11. Criterios de finalización
+## 16. Criterios de finalización
 
 - Cada RF tiene al menos una prueba que pasa.
-- `uv run ruff check .`, `uv run ruff format --check .` y `uv run pytest` pasan, incluida `test_arquitectura.py`.
-- `vp check`, `vp test` y `vp build` pasan.
+- `uv run pytest` pasa con una cobertura de al menos 80% (incluida `test_architecture.py`), y lo mismo para `libs/library_entities`.
+- `uv run ruff check .` y `uv run ruff format --check .` pasan.
+- `bun run lint`, `bun run test` y `bun run build` pasan (en `frontend/`).
 - En producción, `/docs`, `/redoc` y `/openapi.json` no responden (verificado con una prueba).
 - No hay secretos en el repositorio y `.env.example` está al día.
 - Esta especificación refleja el comportamiento real.
 
-## 12. Dudas abiertas
+## 17. Dudas abiertas
 
-- **D-1 Base de datos y ORM.** Decidido en la sección 4.5: PostgreSQL (principal), MySQL y MariaDB (secundarias), SQLAlchemy 2.1 y Alembic. Falta confirmar la versión mínima de cada motor y verificar los drivers en Python 3.15 (D-7).
+- **D-1 (resuelta)** Base de datos y ORM: SQLAlchemy 2.1 con Alembic; PostgreSQL principal y MySQL/MariaDB secundarias (sección 5).
 - **D-2 "Sin exposición pública".** Interpretado así: el backend no es accesible directamente y solo recibe tráfico del proxy inverso; el frontend sí es público. Falta aclarar si los usuarios deben llegar al sistema desde fuera del campus (internet o solo red interna o VPN).
 - **D-3 Librería de rate limit.** Candidatos: `slowapi` (memoria, un solo proceso) o un limitador con Redis (varios procesos). Verificar mantenimiento antes de elegir.
 - **D-4 Calendario.** ¿Los vencimientos se corren si caen en día no hábil o feriado?
-- **D-5 Valores de negocio.** Límites, plazos y tarifa de multa (sección 5.1): validar con la biblioteca.
+- **D-5 Valores de negocio.** Límites, plazos y tarifa de multa (sección 8.1): validar con la biblioteca.
 - **D-6 Navegadores soportados.** ES2026 puro puede excluir navegadores antiguos; definir el `build.target` según los dispositivos reales de los usuarios.
-- **D-7 Compatibilidad con Python 3.15.** Python 3.15 es muy reciente: confirmar que todas las dependencias con extensiones en C (por ejemplo, las de Pydantic y Argon2) tengan ruedas para 3.15 antes de fijarlo; si no, usar 3.14 y subir después. Incluye `SQLAlchemy`, `Alembic`, `psycopg` y `PyMySQL`.
+- **D-7 Compatibilidad con Python 3.15.** SQLAlchemy 2.1.5 y `psycopg-binary` 3.3.6 ya publican ruedas para 3.15. Falta confirmar el resto (Pydantic, Argon2, PyMySQL y las herramientas de prueba) con `uv sync`; si algo falla, usar 3.14 y subir después.
 - **D-8 Inicio de sesión.** ¿Cuentas propias del sistema o integración con la identidad institucional (correo institucional, SSO)? Dominio del correo por confirmar.
 - **D-9 Licencia y propiedad intelectual.** Elegir licencia (ver `LICENSE.md`) y confirmar con la universidad si hay una política de propiedad intelectual sobre proyectos de curso.
+- **D-10 Escáner de seguridad de dependencias.** Elegir un escáner para la API de Bun, o usar otro mecanismo de auditoría.
+- **D-11 Oxfmt.** Confirmar que está lo bastante estable para formatear en Bun; si no, usar Prettier con Bun.
+- **D-12 (resuelta)** Campos de los prototipos: los que entran están en la sección 8 y los que no, en la 12.1. El SQL propuesto está en `.antigravity/context/database.md`.
+- **D-13 (resuelta)** Identificador universitario: `AAAA-II-FFF-NN` con correlativo siempre presente (sección 8.2). El ejemplo recibido decía `2024-PM-601` pero `101` como código de Ingeniería; se asumió `101`.
+- **D-14 (resuelta)** Cobro de varias multas: un `Receipt` agrupa varios `Payment` (sección 8).
+- **D-15 (resuelta)** Moneda: USD.
