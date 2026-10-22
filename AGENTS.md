@@ -60,9 +60,9 @@ La estructura completa de carpetas está en `spec/spec.md`, sección 4. Reglas d
 |---|---|---|
 | 1. Presentación | `frontend/` | nada de Python; usa el contrato HTTP |
 | 2. Interfaz de servicio | `backend/app/interface/` | `dto`, `services`, `security` |
-| 3. Implementación del servicio | `backend/app/services/` | `dto`, `library_entities`, `business` |
+| 3. Implementación del servicio | `backend/app/services/` | `dto`, `library_entities`, `domain` |
 | 4. Tipos de datos | `backend/app/dto/` | nada |
-| 5. Lógica del negocio | `backend/app/business/` | `library_entities`, `repositories`, `security` |
+| 5. Dominio (lógica del negocio) | `backend/app/domain/` | `library_entities`, `repositories`, `security` |
 | 6. Entidades del negocio | `libs/library_entities/` | nada |
 | 7. Repositorio de datos | `backend/app/repositories/` | `library_entities` |
 | Transversal | `backend/app/security/` | nada de las capas |
@@ -70,11 +70,11 @@ La estructura completa de carpetas está en `spec/spec.md`, sección 4. Reglas d
 Reglas que no se rompen:
 
 - La presentación solo conoce **mensajes y tipos de datos**, nunca entidades.
-- `business` solo maneja **entidades**, nunca DTOs ni objetos de FastAPI.
+- `domain` solo maneja **entidades**, nunca DTOs ni objetos de FastAPI.
 - El **translator** convierte entidades en DTOs y viceversa; el **adapter** orquesta cada caso de uso.
-- Solo `business` llama al repositorio. Los endpoints y los adapters no lo tocan.
+- Solo `domain` llama al repositorio. Los endpoints y los adapters no lo tocan.
 - Las entidades son clases puras (sin SQL, sin FastAPI, sin ORM). Los modelos de tablas viven en `repositories/orm_models/`.
-- Las reglas de negocio (límites, multas, transiciones de estado) viven en entidades o en `business`, nunca en endpoints.
+- Las reglas de negocio (límites, multas, transiciones de estado) viven en entidades o en `domain`, nunca en endpoints.
 - POO estricta en casi todas las capas; `security/`, `config.py` y `main.py` son flexibles (spec, sección 6).
 - Cada carpeta de `backend/app/` lleva su `__init__.py`.
 
