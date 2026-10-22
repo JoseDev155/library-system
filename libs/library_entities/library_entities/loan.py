@@ -10,10 +10,10 @@ class LoanStatus(StrEnum):
     RETURNED = "RETURNED"
 
 
+# EN: Loan of one copy to one user.
+# ES: Préstamo de un ejemplar a un usuario.
 @dataclass(slots=True)
 class Loan:
-    """Loan of one copy to one user."""
-
     id: int | None
     copy_id: int
     user_id: str

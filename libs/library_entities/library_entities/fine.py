@@ -13,10 +13,10 @@ class FineStatus(StrEnum):
     WAIVED = "WAIVED"
 
 
+# EN: Fine for a late return. Amounts are USD with two decimals.
+# ES: Multa por devolución tardía. Los importes son USD con dos decimales.
 @dataclass(slots=True)
 class Fine:
-    """Fine for a late return. Amounts are USD with two decimals."""
-
     id: int | None
     loan_id: int
     user_id: str

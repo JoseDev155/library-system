@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
 
+# EN: Catalog title. Physical items are BookCopy objects.
+# ES: Título del catálogo. Los ejemplares físicos son BookCopy.
 @dataclass(slots=True)
 class Book:
-    """Catalog title. Physical items are BookCopy objects."""
-
     id: int | None
     title: str
     authors: list[str]

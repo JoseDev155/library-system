@@ -18,10 +18,10 @@ class Role(StrEnum):
     STUDENT = "student"
 
 
+# EN: System user identified by the university ID (carnet).
+# ES: Usuario del sistema identificado por el carnet universitario.
 @dataclass(slots=True)
 class User:
-    """System user identified by the university ID (carnet)."""
-
     id: str
     institutional_email: str
     name: str

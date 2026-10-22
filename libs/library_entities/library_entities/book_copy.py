@@ -17,10 +17,10 @@ class Circulation(StrEnum):
     REFERENCE_ONLY = "REFERENCE_ONLY"
 
 
+# EN: Physical copy of a book.
+# ES: Ejemplar físico de un libro.
 @dataclass(slots=True)
 class BookCopy:
-    """Physical copy of a book."""
-
     id: int | None
     book_id: int
     inventory_code: str

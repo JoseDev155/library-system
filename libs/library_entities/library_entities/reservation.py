@@ -13,10 +13,10 @@ class ReservationStatus(StrEnum):
     EXPIRED = "EXPIRED"
 
 
+# EN: User reservation of a book, queued until a copy is held.
+# ES: Reserva de un libro por un usuario; en cola hasta apartar un ejemplar.
 @dataclass(slots=True)
 class Reservation:
-    """User reservation of a book, queued until a copy is held."""
-
     id: int | None
     book_id: int
     user_id: str

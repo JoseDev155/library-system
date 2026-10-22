@@ -4,10 +4,10 @@ from dataclasses import dataclass
 _CODE_PATTERN = re.compile(r"^[0-9]{3}$")
 
 
+# EN: Faculty or administrative unit (spec, section 8.3).
+# ES: Facultad o unidad administrativa (spec, sección 8.3).
 @dataclass(frozen=True, slots=True)
 class Faculty:
-    """Faculty or administrative unit (spec, section 8.3)."""
-
     code: str
     name: str
 

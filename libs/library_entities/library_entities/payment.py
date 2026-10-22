@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from decimal import Decimal
 
 
+# EN: Payment of one fine inside a receipt. A fine is paid only once.
+# ES: Pago de una multa dentro de un comprobante. Una multa se paga una sola vez.
 @dataclass(slots=True)
 class Payment:
-    """Payment of one fine inside a receipt. A fine is paid only once."""
-
     id: int | None
     receipt_id: int | None
     fine_id: int

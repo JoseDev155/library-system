@@ -13,10 +13,10 @@ class PaymentMethod(StrEnum):
     TRANSFER = "TRANSFER"
 
 
+# EN: Cash receipt that can cover several fines (spec, RF-17).
+# ES: Comprobante de caja que puede cubrir varias multas (spec, RF-17).
 @dataclass(slots=True)
 class Receipt:
-    """Cash receipt that can cover several fines (spec, RF-17)."""
-
     id: int | None
     receipt_number: str
     cashier_id: str
