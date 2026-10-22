@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 
@@ -12,26 +13,20 @@ class ReservationStatus(StrEnum):
     EXPIRED = "EXPIRED"
 
 
+@dataclass(slots=True)
 class Reservation:
     """User reservation of a book, queued until a copy is held."""
 
-    def __init__(
-        self,
-        id: int | None,
-        book_id: int,
-        user_id: str,
-        created_at: datetime,
-        copy_id: int | None = None,
-        status: ReservationStatus = ReservationStatus.QUEUED,
-        held_until: datetime | None = None,
-    ) -> None:
-        self.id = id
-        self.book_id = book_id
-        self.user_id = user_id
-        self.copy_id = copy_id
-        self.created_at = created_at
-        self.status = ReservationStatus(status)
-        self.held_until = held_until
+    id: int | None
+    book_id: int
+    user_id: str
+    created_at: datetime
+    copy_id: int | None = None
+    status: ReservationStatus = ReservationStatus.QUEUED
+    held_until: datetime | None = None
+
+    def __post_init__(self) -> None:
+        self.status = ReservationStatus(self.status)
 
     def is_active(self) -> bool:
         return self.status in (ReservationStatus.QUEUED, ReservationStatus.HELD)

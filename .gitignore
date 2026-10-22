@@ -100,3 +100,7 @@ $RECYCLE.BIN/
 # Local settings files
 .claude/settings.local.json
 CLAUDE.local.md
+
+# Python
+__pycache__/
+*.pyc

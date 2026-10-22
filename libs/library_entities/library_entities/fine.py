@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from enum import StrEnum
 
@@ -12,34 +13,26 @@ class FineStatus(StrEnum):
     WAIVED = "WAIVED"
 
 
+@dataclass(slots=True)
 class Fine:
     """Fine for a late return. Amounts are USD with two decimals."""
 
-    def __init__(
-        self,
-        id: int | None,
-        loan_id: int,
-        user_id: str,
-        days_late: int,
-        rate_per_day: Decimal,
-        amount: Decimal,
-        status: FineStatus = FineStatus.PENDING,
-        waiver_reason: str | None = None,
-        waived_by: str | None = None,
-    ) -> None:
-        if days_late <= 0:
+    id: int | None
+    loan_id: int
+    user_id: str
+    days_late: int
+    rate_per_day: Decimal
+    amount: Decimal
+    status: FineStatus = FineStatus.PENDING
+    waiver_reason: str | None = None
+    waived_by: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.days_late <= 0:
             raise ValueError("A fine needs at least one day late")
-        if rate_per_day < 0 or amount < 0:
+        if self.rate_per_day < 0 or self.amount < 0:
             raise ValueError("Rate and amount cannot be negative")
-        self.id = id
-        self.loan_id = loan_id
-        self.user_id = user_id
-        self.days_late = days_late
-        self.rate_per_day = rate_per_day
-        self.amount = amount
-        self.status = FineStatus(status)
-        self.waiver_reason = waiver_reason
-        self.waived_by = waived_by
+        self.status = FineStatus(self.status)
 
     @classmethod
     def for_late_loan(

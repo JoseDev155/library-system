@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from enum import StrEnum
 
@@ -9,32 +10,24 @@ class LoanStatus(StrEnum):
     RETURNED = "RETURNED"
 
 
+@dataclass(slots=True)
 class Loan:
     """Loan of one copy to one user."""
 
-    def __init__(
-        self,
-        id: int | None,
-        copy_id: int,
-        user_id: str,
-        loaned_by: str,
-        loaned_at: datetime,
-        due_at: datetime,
-        returned_at: datetime | None = None,
-        renewals: int = 0,
-        status: LoanStatus = LoanStatus.ACTIVE,
-    ) -> None:
-        if due_at <= loaned_at:
+    id: int | None
+    copy_id: int
+    user_id: str
+    loaned_by: str
+    loaned_at: datetime
+    due_at: datetime
+    returned_at: datetime | None = None
+    renewals: int = 0
+    status: LoanStatus = LoanStatus.ACTIVE
+
+    def __post_init__(self) -> None:
+        if self.due_at <= self.loaned_at:
             raise ValueError("Due date must be after the loan date")
-        self.id = id
-        self.copy_id = copy_id
-        self.user_id = user_id
-        self.loaned_by = loaned_by
-        self.loaned_at = loaned_at
-        self.due_at = due_at
-        self.returned_at = returned_at
-        self.renewals = renewals
-        self.status = LoanStatus(status)
+        self.status = LoanStatus(self.status)
 
     def is_active(self) -> bool:
         return self.status is LoanStatus.ACTIVE

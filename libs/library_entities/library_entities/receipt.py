@@ -1,3 +1,4 @@
+from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
 from enum import StrEnum
@@ -12,26 +13,19 @@ class PaymentMethod(StrEnum):
     TRANSFER = "TRANSFER"
 
 
+@dataclass(slots=True)
 class Receipt:
     """Cash receipt that can cover several fines (spec, RF-17)."""
 
-    def __init__(
-        self,
-        id: int | None,
-        receipt_number: str,
-        cashier_id: str,
-        method: PaymentMethod,
-        paid_at: datetime,
-        payments: list[Payment] | None = None,
-    ) -> None:
-        if not receipt_number.strip():
-            raise ValueError("Receipt number cannot be empty")
-        self.id = id
-        self.receipt_number = receipt_number
-        self.cashier_id = cashier_id
-        self.method = PaymentMethod(method)
-        self.paid_at = paid_at
-        self.payments: list[Payment] = list(payments or [])
+    id: int | None
+    receipt_number: str
+    cashier_id: str
+    method: PaymentMethod
+    paid_at: datetime
+    payments: list[Payment] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        self.method = PaymentMethod(self.method)
 
     @property
     def total(self) -> Decimal:

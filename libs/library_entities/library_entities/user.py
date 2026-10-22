@@ -1,4 +1,5 @@
 import re
+from dataclasses import dataclass
 from enum import StrEnum
 
 from .exceptions import BusinessRuleError
@@ -17,30 +18,21 @@ class Role(StrEnum):
     STUDENT = "student"
 
 
+@dataclass(slots=True)
 class User:
     """System user identified by the university ID (carnet)."""
 
-    def __init__(
-        self,
-        id: str,
-        institutional_email: str,
-        name: str,
-        role: Role,
-        faculty_code: str,
-        active: bool = True,
-    ) -> None:
-        if not _UNIVERSITY_ID_PATTERN.match(id):
+    id: str
+    institutional_email: str
+    name: str
+    role: Role
+    faculty_code: str
+    active: bool = True
+
+    def __post_init__(self) -> None:
+        if not _UNIVERSITY_ID_PATTERN.match(self.id):
             raise ValueError("User id must follow the format AAAA-II-FFF-NN")
-        if not institutional_email.strip():
-            raise ValueError("Institutional email cannot be empty")
-        if not name.strip():
-            raise ValueError("User name cannot be empty")
-        self.id = id
-        self.institutional_email = institutional_email
-        self.name = name
-        self.role = Role(role)
-        self.faculty_code = faculty_code
-        self.active = active
+        self.role = Role(self.role)
 
     def can_log_in(self) -> bool:
         return self.active
@@ -61,9 +53,3 @@ class User:
 
     def activate(self) -> None:
         self.active = True
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, User) and self.id == other.id
-
-    def __hash__(self) -> int:
-        return hash(self.id)

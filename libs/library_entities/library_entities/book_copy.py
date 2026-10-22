@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import StrEnum
 
 from .exceptions import BusinessRuleError
@@ -16,28 +17,21 @@ class Circulation(StrEnum):
     REFERENCE_ONLY = "REFERENCE_ONLY"
 
 
+@dataclass(slots=True)
 class BookCopy:
     """Physical copy of a book."""
 
-    def __init__(
-        self,
-        id: int | None,
-        book_id: int,
-        inventory_code: str,
-        status: CopyStatus = CopyStatus.AVAILABLE,
-        circulation: Circulation = Circulation.LOANABLE,
-        location_floor: str | None = None,
-        location_shelf: str | None = None,
-    ) -> None:
-        if not inventory_code.strip():
-            raise ValueError("Inventory code cannot be empty")
-        self.id = id
-        self.book_id = book_id
-        self.inventory_code = inventory_code
-        self.status = CopyStatus(status)
-        self.circulation = Circulation(circulation)
-        self.location_floor = location_floor
-        self.location_shelf = location_shelf
+    id: int | None
+    book_id: int
+    inventory_code: str
+    status: CopyStatus = CopyStatus.AVAILABLE
+    circulation: Circulation = Circulation.LOANABLE
+    location_floor: str | None = None
+    location_shelf: str | None = None
+
+    def __post_init__(self) -> None:
+        self.status = CopyStatus(self.status)
+        self.circulation = Circulation(self.circulation)
 
     def can_be_loaned(self) -> bool:
         return self.circulation is Circulation.LOANABLE and self.status in (
