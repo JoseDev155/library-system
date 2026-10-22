@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Sistema Universitario de Bibliotecas</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-primary":"#ffffff","on-primary-fixed":"#40000b","surface-bright":"#fcf9f8","on-tertiary-fixed-variant":"#005046","on-tertiary-container":"#83c5b7","on-surface":"#1b1b1c","on-secondary-fixed-variant":"#5b4300","status-success":"#2E7D32","surface-container-high":"#eae7e7","inverse-on-surface":"#f3f0ef","tertiary-container":"#005348","primary-fixed":"#ffdada","surface-tint":"#a93441","status-error":"#B3261E","on-secondary-container":"#6c5000","secondary-fixed-dim":"#fbbd00","on-tertiary-fixed":"#00201b","outline-variant":"#debfbf","on-tertiary":"#ffffff","error":"#ba1a1a","on-error":"#ffffff","on-background":"#1b1b1c","inverse-primary":"#ffb3b4","secondary":"#795900","surface":"#F7F5F2","border":"#E5E0DA","on-primary-container":"#ff9da0","primary":"#6b0119","on-primary-fixed-variant":"#881c2b","status-info":"#1565C0","error-container":"#ffdad6","surface-variant":"#e5e2e1","surface-container-lowest":"#ffffff","primary-container":"#8b1e2d","outline":"#8b7171","tertiary-fixed-dim":"#90d3c5","on-error-container":"#93000a","surface-dim":"#dcd9d9","status-warning":"#B26A00","surface-container-low":"#f6f3f2","background":"#fcf9f8","surface-container-highest":"#e5e2e1","primary-fixed-dim":"#ffb3b4","tertiary":"#003a32","on-secondary":"#ffffff","text-muted":"#6B6B6B","primary-dark":"#6E1824","secondary-container":"#febf00","on-secondary-fixed":"#261a00","tertiary-fixed":"#acf0e0","surface-container":"#f0eded","on-surface-variant":"#574142","inverse-surface":"#303030","secondary-fixed":"#ffdf9e"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{"space-md":"1rem","space-sm":"0.5rem","space-xl":"2.5rem","gutter-mobile":"1rem","space-xs":"0.25rem","margin":"2rem","margin-mobile":"1rem","space-lg":"1.5rem","gutter":"1.5rem"},fontFamily:{"body-default-bold":['"Source Sans 3"'],"headline-lg":['"Source Sans 3"'],"body-operational":['"Source Sans 3"'],"label-default":['"Source Sans 3"'],"headline-md":['"Source Sans 3"'],"headline-xl":['"Source Sans 3"'],"headline-xl-mobile":['"Source Sans 3"'],"body-operational-bold":['"Source Sans 3"'],caption:['"Source Sans 3"'],"title-desk":['"Source Sans 3"'],"label-operational":['"Source Sans 3"'],"body-default":['"Source Sans 3"'],"headline-lg-mobile":['"Source Sans 3"']},fontSize:{"body-default-bold":["16px",{lineHeight:"24px",fontWeight:"600"}],"headline-lg":["28px",{lineHeight:"36px",fontWeight:"600"}],"body-operational":["18px",{lineHeight:"26px",fontWeight:"400"}],"label-default":["16px",{lineHeight:"20px",fontWeight:"500"}],"headline-md":["22px",{lineHeight:"28px",fontWeight:"600"}],"headline-xl":["36px",{lineHeight:"44px",fontWeight:"700"}],"headline-xl-mobile":["28px",{lineHeight:"36px",fontWeight:"700"}],"body-operational-bold":["18px",{lineHeight:"26px",fontWeight:"600"}],caption:["14px",{lineHeight:"18px",fontWeight:"400"}],"title-desk":["20px",{lineHeight:"26px",fontWeight:"600"}],"label-operational":["18px",{lineHeight:"24px",fontWeight:"600"}],"body-default":["16px",{lineHeight:"24px",fontWeight:"400"}],"headline-lg-mobile":["24px",{lineHeight:"32px",fontWeight:"600"}]}}}};</script></head><body class="bg-surface font-body-default text-body-default text-on-surface antialiased min-h-screen flex flex-col justify-between"><header class="fixed top-0 w-full z-50 bg-primary-container text-on-primary shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="h-20 max-w-[1280px] mx-auto px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm select-none"><div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary-container shadow-sm"><span class="material-symbols-outlined text-[24px]">local_library</span></div><div class="flex flex-col"><span class="font-title-desk text-title-desk tracking-tight uppercase leading-none text-on-primary">Biblioteca</span><span class="font-caption text-caption text-on-primary-container tracking-wider uppercase leading-none mt-space-xs">Sistema Universitario</span></div></div><nav class="hidden xl:flex items-center gap-space-xs p-space-xs rounded-xl bg-primary/30" data-active-classes="bg-primary-dark text-on-primary font-semibold shadow-inner"><a class="px-space-md py-space-sm rounded-lg font-label-default text-label-default text-on-primary/80 hover:bg-primary-dark/50 hover:text-on-primary transition-all" data-path="mostrador-circulacion" href="#">Mostrador / Circulación</a><a class="px-space-md py-space-sm rounded-lg font-label-default text-label-default text-on-primary/80 hover:bg-primary-dark/50 hover:text-on-primary transition-all" data-path="gestion-de-catalogo" href="#">Gestión de Catálogo</a><a class="px-space-md py-space-sm rounded-lg font-label-default text-label-default text-on-primary/80 hover:bg-primary-dark/50 hover:text-on-primary transition-all" data-path="caja-y-multas" href="#">Caja y Multas</a><a class="px-space-md py-space-sm rounded-lg font-label-default text-label-default text-on-primary/80 hover:bg-primary-dark/50 hover:text-on-primary transition-all" data-path="gestion-de-usuarios" href="#">Gestión de Usuarios</a><a class="px-space-md py-space-sm rounded-lg font-label-default text-label-default text-on-primary/80 hover:bg-primary-dark/50 hover:text-on-primary transition-all" data-path="reportes" href="#">Reportes</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-md py-space-xs rounded-xl bg-primary-dark/60 text-on-primary"><span class="material-symbols-outlined text-[18px] text-secondary-fixed">desktop_windows</span><div class="flex flex-col text-left"><span class="font-caption text-caption text-on-primary-container leading-none">Estación de Trabajo</span><span class="font-label-default text-label-default text-on-primary leading-tight font-medium">Terminal Bibliotecaria / Sala Técnica</span></div></div><button aria-label="Alertas operativas" class="relative p-space-sm rounded-lg hover:bg-primary-dark/50 text-on-primary focus:outline-none focus:ring-2 focus:ring-secondary-fixed transition-all"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-secondary-container rounded-full ring-2 ring-primary-container"></span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-default text-label-default text-on-primary leading-tight font-semibold">Lic. Martha Gómez</span><span class="font-caption text-caption text-secondary-fixed font-medium leading-none mt-0.5">Bibliotecaria Administradora</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-20 bg-surface flex-1"><div class="flex flex-col w-full">
+<div class="max-w-[1280px] w-full mx-auto px-gutter py-space-xl flex flex-col gap-space-xl">
+<!-- ENCABEZADO DE PÁGINA INSTITUCIONAL -->
+<header class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
+<div class="flex flex-col max-w-3xl">
+<div class="flex items-center gap-space-xs mb-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-caption text-caption uppercase tracking-wider text-text-muted font-semibold">
+            Módulo de Administración • Control de Accesos y Permisos
+          </span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">
+          Administración de Usuarios y Roles
+        </h1>
+<p class="font-body-default text-body-default text-text-muted mt-space-xs">
+          Gestiona las cuentas institucionales, asignación de perfiles de acceso y estado operativo de la comunidad universitaria y personal bibliotecario.
+        </p>
+</div>
+<div class="flex items-center shrink-0">
+<button class="h-[50px] px-space-lg rounded-xl bg-primary-container text-on-primary font-label-operational text-label-operational flex items-center justify-center gap-space-sm shadow-md hover:bg-primary-dark transition-all focus:outline-none focus:ring-4 focus:ring-primary-container/30 cursor-pointer" id="btn-nuevo-usuario" type="button">
+<span class="material-symbols-outlined text-[22px]">person_add</span>
+<span>+ Registrar Nuevo Usuario</span>
+</button>
+</div>
+</header>
+<!-- PANEL DE MÉTRICAS RÁPIDAS (KPIS) -->
+<section aria-label="Métricas de usuarios" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- KPI 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-default text-label-default text-text-muted">Total Usuarios Activos</span>
+<div class="w-10 h-10 rounded-lg bg-surface flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[24px]">group</span>
+</div>
+</div>
+<div class="mt-space-md flex flex-col">
+<span class="font-headline-xl text-headline-xl text-on-surface font-bold leading-none">2,845</span>
+<span class="font-caption text-caption text-status-success font-semibold flex items-center gap-1 mt-space-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+            99.2% cuentas operativas
+          </span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-default text-label-default text-text-muted">Estudiantes y Docentes</span>
+<div class="w-10 h-10 rounded-lg bg-surface flex items-center justify-center text-status-info">
+<span class="material-symbols-outlined text-[24px]">school</span>
+</div>
+</div>
+<div class="mt-space-md flex flex-col">
+<span class="font-headline-xl text-headline-xl text-on-surface font-bold leading-none">2,790</span>
+<div class="flex items-center gap-space-sm font-caption text-caption text-text-muted mt-space-xs">
+<span class="font-medium">2,540 Estudiantes</span>
+<span>•</span>
+<span class="font-medium">250 Docentes</span>
+</div>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-default text-label-default text-text-muted">Personal Operativo</span>
+<div class="w-10 h-10 rounded-lg bg-surface flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">badge</span>
+</div>
+</div>
+<div class="mt-space-md flex flex-col">
+<span class="font-headline-xl text-headline-xl text-on-surface font-bold leading-none">48</span>
+<span class="font-caption text-caption text-text-muted mt-space-xs">
+            36 Bibliotecarios y 12 en Módulos de Caja
+          </span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg flex flex-col justify-between shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-default text-label-default text-text-muted">Administradores Sistema</span>
+<div class="w-10 h-10 rounded-lg bg-surface flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[24px]">admin_panel_settings</span>
+</div>
+</div>
+<div class="mt-space-md flex flex-col">
+<span class="font-headline-xl text-headline-xl text-on-surface font-bold leading-none">7</span>
+<span class="font-caption text-caption text-status-warning font-semibold flex items-center gap-1 mt-space-xs">
+<span class="material-symbols-outlined text-[16px]">security</span>
+            Privilegios elevados activos
+          </span>
+</div>
+</div>
+</section>
+<!-- BARRA DE BÚSQUEDA Y FILTRADO INTEGRADO -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<!-- Fila 1: Buscador de texto ancho -->
+<div class="flex flex-col md:flex-row gap-space-md items-stretch">
+<div class="relative flex-1">
+<label class="sr-only" for="buscar-usuario">Buscar por nombre, apellido, correo institucional o carnet</label>
+<span class="absolute inset-y-0 left-0 pl-space-md flex items-center pointer-events-none text-text-muted">
+<span class="material-symbols-outlined text-[22px]">search</span>
+</span>
+<input class="w-full h-12 pl-12 pr-space-md bg-surface text-on-surface placeholder:text-text-muted/70 rounded-lg font-body-default text-body-default focus:outline-none focus:ring-2 focus:ring-primary-container transition-all" id="buscar-usuario" placeholder="Buscar por nombre, apellido, correo institucional o carnet/cédula..." type="text"/>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<div class="relative">
+<select class="h-12 pl-space-md pr-10 bg-surface text-on-surface font-label-default text-label-default rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-container" id="filtro-estado">
+<option value="todos">Estado: Todos</option>
+<option value="activo">Solo Activos</option>
+<option value="inactivo">Inactivo / Suspendido</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-[20px] pointer-events-none text-text-muted">
+              expand_more
+            </span>
+</div>
+<button class="h-12 px-space-lg rounded-lg bg-surface text-on-surface font-label-default text-label-default hover:bg-surface-container transition-all flex items-center gap-space-xs cursor-pointer shadow-sm" type="button">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+<span>Filtrar</span>
+</button>
+<button class="h-12 px-space-md text-text-muted hover:text-primary-container font-label-default text-label-default transition-colors flex items-center gap-1 cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span>Limpiar</span>
+</button>
+</div>
+</div>
+<!-- Fila 2: Chips / Píldoras de selección de rol rápido -->
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<span class="font-caption text-caption text-text-muted uppercase font-semibold mr-space-xs">Roles:</span>
+<button class="role-pill px-space-md py-1.5 rounded-full font-label-default text-caption bg-primary-container text-on-primary font-semibold transition-all shadow-sm" data-role="todos" type="button">
+          Todos los roles (2,845)
+        </button>
+<button class="role-pill px-space-md py-1.5 rounded-full font-label-default text-caption bg-surface text-on-surface hover:bg-surface-container font-medium transition-all" data-role="estudiante" type="button">
+          Estudiante (2,540)
+        </button>
+<button class="role-pill px-space-md py-1.5 rounded-full font-label-default text-caption bg-surface text-on-surface hover:bg-surface-container font-medium transition-all" data-role="docente" type="button">
+          Docente (250)
+        </button>
+<button class="role-pill px-space-md py-1.5 rounded-full font-label-default text-caption bg-surface text-on-surface hover:bg-surface-container font-medium transition-all" data-role="bibliotecario" type="button">
+          Bibliotecario (36)
+        </button>
+<button class="role-pill px-space-md py-1.5 rounded-full font-label-default text-caption bg-surface text-on-surface hover:bg-surface-container font-medium transition-all" data-role="caja" type="button">
+          Caja (12)
+        </button>
+<button class="role-pill px-space-md py-1.5 rounded-full font-label-default text-caption bg-surface text-on-surface hover:bg-surface-container font-medium transition-all" data-role="administrador" type="button">
+          Administrador (7)
+        </button>
+</div>
+<!-- Contador de resultados activos -->
+<div class="flex items-center justify-between text-text-muted font-caption text-caption pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary-container">info</span>
+<span>Mostrando <strong>7</strong> de <strong>2,845</strong> usuarios registrados</span>
+</div>
+<span>Orden: Modificación reciente</span>
+</div>
+</section>
+<!-- TABLA PRINCIPAL DE USUARIOS -->
+<section aria-label="Listado de usuarios" class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface text-on-surface font-label-default text-label-default h-14">
+<th class="px-space-lg py-space-md font-semibold" scope="col">Usuario y Carnet</th>
+<th class="px-space-md py-space-md font-semibold" scope="col">Correo Institucional</th>
+<th class="px-space-md py-space-md font-semibold" scope="col">Rol Asignado</th>
+<th class="px-space-md py-space-md font-semibold" scope="col">Facultad / Unidad</th>
+<th class="px-space-md py-space-md font-semibold" scope="col">Estado</th>
+<th class="px-space-lg py-space-md text-right font-semibold" scope="col">Acciones Operativas</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-on-surface font-body-default text-body-default">
+<!-- FILA 1: Estudiante -->
+<tr class="hover:bg-surface/50 transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md min-w-[240px]">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-title-desk font-semibold text-primary-container shrink-0">
+                    CM
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-default-bold text-body-default-bold text-on-surface truncate">Carlos Mendoza Morales</span>
+<span class="font-caption text-caption text-text-muted font-mono">Carnet U-20210894</span>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-mono text-caption text-on-surface-variant whitespace-nowrap">
+                c.mendoza@universidad.edu.sv
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-default text-caption font-medium">
+<span class="material-symbols-outlined text-[16px] text-text-muted">person</span>
+                  Estudiante
+                </span>
+</td>
+<td class="px-space-md py-space-md text-on-surface-variant whitespace-nowrap">
+                Fac. Ciencias Exactas
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-success/10 text-status-success font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                  Activo
+                </span>
+</td>
+<td class="px-space-lg py-space-md text-right whitespace-nowrap">
+<div class="inline-flex items-center justify-end gap-space-xs">
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-surface-container text-primary-container font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="abrirModalRol('Carlos Mendoza Morales', 'c.mendoza@universidad.edu.sv', 'U-20210894', 'Estudiante')" title="Modificar perfil de permisos" type="button">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+<span>Editar Rol</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-error-container text-status-error font-label-default text-caption font-medium flex items-center gap-1 cursor-pointer transition-colors" onclick="toggleUsuario('Carlos Mendoza Morales', 'desactivar')" title="Suspender acceso al sistema" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+<span>Desactivar</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- FILA 2: Bibliotecario -->
+<tr class="bg-surface/20 hover:bg-surface/50 transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md min-w-[240px]">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed/30 flex items-center justify-center font-title-desk font-semibold text-tertiary shrink-0">
+                    MG
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-default-bold text-body-default-bold text-on-surface truncate">Lic. Martha Gómez</span>
+<span class="font-caption text-caption text-text-muted font-mono">Emp. EMP-1042</span>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-mono text-caption text-on-surface-variant whitespace-nowrap">
+                m.gomez@universidad.edu.sv
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed/40 text-tertiary font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+                  Bibliotecario
+                </span>
+</td>
+<td class="px-space-md py-space-md text-on-surface-variant whitespace-nowrap">
+                Coordinación Mostrador
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-success/10 text-status-success font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                  Activo
+                </span>
+</td>
+<td class="px-space-lg py-space-md text-right whitespace-nowrap">
+<div class="inline-flex items-center justify-end gap-space-xs">
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-surface-container text-primary-container font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="abrirModalRol('Lic. Martha Gómez', 'm.gomez@universidad.edu.sv', 'EMP-1042', 'Bibliotecario')" type="button">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+<span>Editar Rol</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-error-container text-status-error font-label-default text-caption font-medium flex items-center gap-1 cursor-pointer transition-colors" onclick="toggleUsuario('Lic. Martha Gómez', 'desactivar')" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+<span>Desactivar</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- FILA 3: Docente -->
+<tr class="hover:bg-surface/50 transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md min-w-[240px]">
+<div class="w-10 h-10 rounded-full bg-status-info/10 flex items-center justify-center font-title-desk font-semibold text-status-info shrink-0">
+                    RH
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-default-bold text-body-default-bold text-on-surface truncate">Dr. Roberto Hernández Sampieri</span>
+<span class="font-caption text-caption text-text-muted font-mono">Docente DOC-0831</span>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-mono text-caption text-on-surface-variant whitespace-nowrap">
+                r.hernandez@universidad.edu.sv
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-info/10 text-status-info font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">school</span>
+                  Docente
+                </span>
+</td>
+<td class="px-space-md py-space-md text-on-surface-variant whitespace-nowrap">
+                Fac. Humanidades e Investigación
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-success/10 text-status-success font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                  Activo
+                </span>
+</td>
+<td class="px-space-lg py-space-md text-right whitespace-nowrap">
+<div class="inline-flex items-center justify-end gap-space-xs">
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-surface-container text-primary-container font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="abrirModalRol('Dr. Roberto Hernández Sampieri', 'r.hernandez@universidad.edu.sv', 'DOC-0831', 'Docente')" type="button">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+<span>Editar Rol</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-error-container text-status-error font-label-default text-caption font-medium flex items-center gap-1 cursor-pointer transition-colors" onclick="toggleUsuario('Dr. Roberto Hernández Sampieri', 'desactivar')" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+<span>Desactivar</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- FILA 4: Caja -->
+<tr class="bg-surface/20 hover:bg-surface/50 transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md min-w-[240px]">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed/50 flex items-center justify-center font-title-desk font-semibold text-secondary shrink-0">
+                    SR
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-default-bold text-body-default-bold text-on-surface truncate">Sandra Patricia Rivas</span>
+<span class="font-caption text-caption text-text-muted font-mono">Emp. EMP-2105</span>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-mono text-caption text-on-surface-variant whitespace-nowrap">
+                s.rivas@universidad.edu.sv
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/50 text-secondary font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">point_of_sale</span>
+                  Caja
+                </span>
+</td>
+<td class="px-space-md py-space-md text-on-surface-variant whitespace-nowrap">
+                Módulo de Tesorería y Cobros
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-success/10 text-status-success font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                  Activo
+                </span>
+</td>
+<td class="px-space-lg py-space-md text-right whitespace-nowrap">
+<div class="inline-flex items-center justify-end gap-space-xs">
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-surface-container text-primary-container font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="abrirModalRol('Sandra Patricia Rivas', 's.rivas@universidad.edu.sv', 'EMP-2105', 'Caja')" type="button">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+<span>Editar Rol</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-error-container text-status-error font-label-default text-caption font-medium flex items-center gap-1 cursor-pointer transition-colors" onclick="toggleUsuario('Sandra Patricia Rivas', 'desactivar')" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+<span>Desactivar</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- FILA 5: Administrador -->
+<tr class="hover:bg-surface/50 transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md min-w-[240px]">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-title-desk font-semibold shrink-0">
+                    AV
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-default-bold text-body-default-bold text-on-surface truncate">Ing. Alejandro Valencia</span>
+<span class="font-caption text-caption text-text-muted font-mono">Emp. EMP-0012</span>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-mono text-caption text-on-surface-variant whitespace-nowrap">
+                a.valencia@universidad.edu.sv
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+                  Administrador
+                </span>
+</td>
+<td class="px-space-md py-space-md text-on-surface-variant whitespace-nowrap">
+                Dirección de Tecnologías y Sistemas
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-success/10 text-status-success font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                  Activo
+                </span>
+</td>
+<td class="px-space-lg py-space-md text-right whitespace-nowrap">
+<div class="inline-flex items-center justify-end gap-space-xs">
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-surface-container text-primary-container font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="abrirModalRol('Ing. Alejandro Valencia', 'a.valencia@universidad.edu.sv', 'EMP-0012', 'Administrador')" type="button">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+<span>Editar Rol</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface text-text-muted/40 font-label-default text-caption font-medium flex items-center gap-1 cursor-not-allowed opacity-60" disabled="" title="No es posible suspender al superusuario principal" type="button">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+<span>Protegido</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- FILA 6: Estudiante Suspendido -->
+<tr class="bg-error-container/20 hover:bg-error-container/30 transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md min-w-[240px]">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center font-title-desk font-semibold text-status-error shrink-0">
+                    SD
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-default-bold text-body-default-bold text-on-surface truncate">Sofía Elena Durán</span>
+<span class="font-caption text-caption text-text-muted font-mono">Carnet U-20230115</span>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-mono text-caption text-on-surface-variant whitespace-nowrap">
+                s.duran@universidad.edu.sv
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-default text-caption font-medium">
+<span class="material-symbols-outlined text-[16px] text-text-muted">person</span>
+                  Estudiante
+                </span>
+</td>
+<td class="px-space-md py-space-md text-on-surface-variant whitespace-nowrap">
+                Fac. Ciencias Médicas
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<div class="flex flex-col">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-status-error font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+                    Inactivo / Suspendido
+                  </span>
+<span class="font-caption text-[12px] text-status-error mt-0.5 ml-1">Multa activa por devolver</span>
+</div>
+</td>
+<td class="px-space-lg py-space-md text-right whitespace-nowrap">
+<div class="inline-flex items-center justify-end gap-space-xs">
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-surface-container text-primary-container font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="abrirModalRol('Sofía Elena Durán', 's.duran@universidad.edu.sv', 'U-20230115', 'Estudiante')" type="button">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+<span>Editar Rol</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-status-success/10 hover:bg-status-success/20 text-status-success font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="toggleUsuario('Sofía Elena Durán', 'reactivar')" type="button">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+<span>Reactivar</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- FILA 7: Bibliotecario -->
+<tr class="hover:bg-surface/50 transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md min-w-[240px]">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed/30 flex items-center justify-center font-title-desk font-semibold text-tertiary shrink-0">
+                    DS
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-default-bold text-body-default-bold text-on-surface truncate">David Ernesto Solís</span>
+<span class="font-caption text-caption text-text-muted font-mono">Emp. EMP-1120</span>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-mono text-caption text-on-surface-variant whitespace-nowrap">
+                d.solis@universidad.edu.sv
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed/40 text-tertiary font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+                  Bibliotecario
+                </span>
+</td>
+<td class="px-space-md py-space-md text-on-surface-variant whitespace-nowrap">
+                Procesos Técnicos y Catalogación
+              </td>
+<td class="px-space-md py-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-success/10 text-status-success font-label-default text-caption font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                  Activo
+                </span>
+</td>
+<td class="px-space-lg py-space-md text-right whitespace-nowrap">
+<div class="inline-flex items-center justify-end gap-space-xs">
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-surface-container text-primary-container font-label-default text-caption font-semibold flex items-center gap-1 cursor-pointer transition-colors" onclick="abrirModalRol('David Ernesto Solís', 'd.solis@universidad.edu.sv', 'EMP-1120', 'Bibliotecario')" type="button">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+<span>Editar Rol</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface hover:bg-error-container text-status-error font-label-default text-caption font-medium flex items-center gap-1 cursor-pointer transition-colors" onclick="toggleUsuario('David Ernesto Solís', 'desactivar')" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+<span>Desactivar</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- PAGINACIÓN Y CONTROL DE VISTA -->
+<div class="px-space-lg py-space-md bg-surface flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-default text-body-default">
+<span class="font-caption text-caption text-text-muted">
+          Página <strong class="text-on-surface font-semibold">1</strong> de <strong class="text-on-surface font-semibold">407</strong> páginas
+        </span>
+<nav aria-label="Navegación de páginas" class="flex items-center gap-1">
+<button class="h-10 px-space-md rounded-lg bg-surface-container text-text-muted font-label-default text-caption font-medium cursor-not-allowed opacity-50 flex items-center gap-1" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+<span>Anterior</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-primary-container text-on-primary font-label-default text-caption font-semibold shadow-sm" type="button">1</button>
+<button class="w-10 h-10 rounded-lg bg-surface-container-lowest hover:bg-surface text-on-surface font-label-default text-caption font-medium transition-colors" type="button">2</button>
+<button class="w-10 h-10 rounded-lg bg-surface-container-lowest hover:bg-surface text-on-surface font-label-default text-caption font-medium transition-colors" type="button">3</button>
+<span class="w-8 text-center text-text-muted font-caption text-caption">...</span>
+<button class="w-10 h-10 rounded-lg bg-surface-container-lowest hover:bg-surface text-on-surface font-label-default text-caption font-medium transition-colors" type="button">407</button>
+<button class="h-10 px-space-md rounded-lg bg-surface-container-lowest hover:bg-surface text-on-surface font-label-default text-caption font-medium transition-colors flex items-center gap-1 cursor-pointer shadow-sm" type="button">
+<span>Siguiente</span>
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</nav>
+</div>
+</section>
+</div>
+<!-- MODAL ACCESIBLE: EDITAR ROL DE USUARIO -->
+<div aria-labelledby="modal-titulo" aria-modal="true" class="fixed inset-0 z-50 flex items-center justify-center p-gutter bg-on-surface/50 backdrop-blur-sm hidden" id="modal-editar-rol" role="dialog">
+<div class="bg-surface-container-lowest rounded-xl max-w-lg w-full p-space-xl flex flex-col gap-space-lg shadow-xl relative animate-in fade-in zoom-in-95 duration-150">
+<!-- Encabezado del Modal -->
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-caption text-caption uppercase text-text-muted font-bold tracking-wider">Modificación de Privilegios</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-space-xs" id="modal-titulo">
+            Actualizar Rol Institucional
+          </h2>
+</div>
+<button aria-label="Cerrar ventana" class="w-10 h-10 rounded-lg hover:bg-surface text-text-muted flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary-container" onclick="cerrarModalRol()" type="button">
+<span class="material-symbols-outlined text-[24px]">close</span>
+</button>
+</div>
+<!-- Ficha de usuario seleccionado -->
+<div class="bg-surface rounded-xl p-space-md flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary font-headline-md flex items-center justify-center font-bold" id="modal-avatar">
+          CM
+        </div>
+<div class="flex flex-col">
+<span class="font-body-default-bold text-body-default-bold text-on-surface" id="modal-nombre">Carlos Mendoza Morales</span>
+<span class="font-caption text-caption text-text-muted font-mono" id="modal-correo">c.mendoza@universidad.edu.sv</span>
+<span class="font-caption text-caption text-primary-container font-semibold mt-0.5" id="modal-id">Carnet U-20210894</span>
+</div>
+</div>
+<!-- Formulario de selección de rol -->
+<form class="flex flex-col gap-space-md" id="form-editar-rol" onsubmit="guardarNuevoRol(event)">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-operational text-label-operational text-on-surface" for="select-nuevo-rol">
+            Seleccionar Nuevo Perfil de Rol
+          </label>
+<div class="relative">
+<select class="w-full h-12 px-space-md bg-surface text-on-surface font-body-operational text-body-operational rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-container" id="select-nuevo-rol" required="">
+<option value="Estudiante">Estudiante — Consulta de catálogo y préstamos personales</option>
+<option value="Docente">Docente — Préstamos extendidos e investigación</option>
+<option value="Bibliotecario">Bibliotecario — Circulación, catalogación y control de sala</option>
+<option value="Caja">Caja — Cobro de multas, solvencias y arqueo contable</option>
+<option value="Administrador">Administrador — Acceso total al sistema y seguridad</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-[22px] pointer-events-none text-text-muted">
+              unfold_more
+            </span>
+</div>
+</div>
+<!-- Advertencia de seguridad institucional -->
+<div class="p-space-md rounded-xl bg-status-warning/10 text-on-surface flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-status-warning text-[22px] shrink-0 mt-0.5">warning</span>
+<p class="font-caption text-caption leading-relaxed">
+<strong>Aviso de Auditoría:</strong> El cambio de rol surte efecto en el próximo inicio de sesión del usuario y quedará registrado de forma permanente en la bitácora institucional de seguridad.
+          </p>
+</div>
+<!-- Acciones del Modal con altura accesible -->
+<div class="flex flex-col sm:flex-row items-center justify-end gap-space-md pt-space-sm mt-space-sm">
+<button class="w-full sm:w-auto h-12 px-space-lg rounded-xl bg-surface hover:bg-surface-container text-on-surface font-label-operational text-label-operational transition-all cursor-pointer" onclick="cerrarModalRol()" type="button">
+            Cancelar
+          </button>
+<button class="w-full sm:w-auto h-12 px-space-xl rounded-xl bg-primary-container text-on-primary font-label-operational text-label-operational hover:bg-primary-dark transition-all cursor-pointer shadow-md flex items-center justify-center gap-space-xs" type="submit">
+<span class="material-symbols-outlined text-[20px]">check</span>
+<span>Guardar Rol</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<!-- NOTIFICACIÓN OPERATIVA FLOTANTE (TOAST) -->
+<div aria-live="polite" class="fixed bottom-6 right-6 z-50 bg-on-surface text-surface-container-lowest px-space-lg py-space-md rounded-xl shadow-2xl flex items-center gap-space-md translate-y-24 opacity-0 transition-all duration-300 pointer-events-none" id="toast-notificacion" role="status">
+<div class="w-8 h-8 rounded-full bg-status-success flex items-center justify-center text-on-primary shrink-0">
+<span class="material-symbols-outlined text-[18px]">done</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-default-bold text-body-default-bold leading-tight" id="toast-titulo">Operación exitosa</span>
+<span class="font-caption text-caption text-surface-container-high" id="toast-mensaje">Los cambios se guardaron correctamente.</span>
+</div>
+</div>
+</div>
+<script>
+  // Control interactivo de la ventana modal y filtros
+  let usuarioSeleccionadoActual = null;
+
+  function abrirModalRol(nombre, correo, id, rolActual) {
+    usuarioSeleccionadoActual = { nombre, correo, id, rolActual };
+    
+    document.getElementById('modal-nombre').textContent = nombre;
+    document.getElementById('modal-correo').textContent = correo;
+    document.getElementById('modal-id').textContent = id;
+    
+    // Asignar iniciales al avatar
+    const iniciales = nombre.split(' ').map(n => n[0]).slice(0, 2).join('');
+    document.getElementById('modal-avatar').textContent = iniciales;
+
+    // Seleccionar el rol actual en el dropdown
+    const select = document.getElementById('select-nuevo-rol');
+    select.value = rolActual;
+
+    const modal = document.getElementById('modal-editar-rol');
+    modal.classList.remove('hidden');
+    select.focus();
+  }
+
+  function cerrarModalRol() {
+    const modal = document.getElementById('modal-editar-rol');
+    modal.classList.add('hidden');
+  }
+
+  function guardarNuevoRol(e) {
+    e.preventDefault();
+    const nuevoRol = document.getElementById('select-nuevo-rol').value;
+    cerrarModalRol();
+    mostrarToast("Rol Actualizado", `El perfil de ${usuarioSeleccionadoActual.nombre} se actualizó a "${nuevoRol}".`);
+  }
+
+  function toggleUsuario(nombre, accion) {
+    if (accion === 'desactivar') {
+      if (confirm(`¿Confirma suspender temporalmente el acceso de "${nombre}" a los servicios bibliotecarios?`)) {
+        mostrarToast("Cuenta Suspendida", `Se ha bloqueado el acceso operativo para ${nombre}.`);
+      }
+    } else {
+      mostrarToast("Cuenta Reactivada", `Se restauró el acceso institucional para ${nombre}.`);
+    }
+  }
+
+  function mostrarToast(titulo, mensaje) {
+    const toast = document.getElementById('toast-notificacion');
+    document.getElementById('toast-titulo').textContent = titulo;
+    document.getElementById('toast-mensaje').textContent = mensaje;
+
+    toast.classList.remove('translate-y-24', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-24', 'opacity-0');
+    }, 4500);
+  }
+
+  // Interacción de píldoras de filtrado de roles
+  document.querySelectorAll('.role-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.role-pill').forEach(p => {
+        p.classList.remove('bg-primary-container', 'text-on-primary', 'font-semibold', 'shadow-sm');
+        p.classList.add('bg-surface', 'text-on-surface', 'font-medium');
+      });
+      this.classList.remove('bg-surface', 'text-on-surface', 'font-medium');
+      this.classList.add('bg-primary-container', 'text-on-primary', 'font-semibold', 'shadow-sm');
+    });
+  });
+
+  // Botón de Registrar Nuevo Usuario
+  document.getElementById('btn-nuevo-usuario').addEventListener('click', () => {
+    abrirModalRol("Nuevo Usuario Institucional", "pendiente@universidad.edu.sv", "Código Temporal", "Estudiante");
+  });
+
+  // Cerrar modal al presionar ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      cerrarModalRol();
+    }
+  });
+</script></main><footer class="w-full bg-surface border-t border-border mt-auto"><div class="max-w-[1280px] mx-auto px-gutter py-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md font-body-default text-body-default"><div class="flex flex-col sm:flex-row items-center gap-space-md text-text-muted font-caption text-caption"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px] text-primary-container">support_agent</span><span>Mesa de Ayuda Bibliotecaria: Ext. 4020 / soporte.bib@universidad.edu</span></div><span class="hidden sm:inline text-border">|</span><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px] text-primary-container">schedule</span><span>Atención: Lunes a Viernes 07:00 - 21:00 | Sábados 08:00 - 14:00</span></div></div><div class="flex items-center gap-space-sm px-space-md py-space-xs rounded-full bg-surface-container border border-border"><span class="w-2.5 h-2.5 rounded-full bg-status-success animate-pulse"></span><span class="font-caption text-caption text-on-surface font-semibold">Terminal en línea y sincronizada</span></div></div></footer></body></html>

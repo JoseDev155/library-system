@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Biblioteca - Sistema Universitario</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface": "#F7F5F2", "status-info": "#1565C0", "secondary": "#795900", "on-secondary-container": "#6c5000", "surface-container": "#f0eded", "inverse-primary": "#ffb3b4", "on-surface-variant": "#574142", "inverse-surface": "#303030", "on-error": "#ffffff", "on-tertiary-fixed": "#00201b", "secondary-fixed": "#ffdf9e", "on-tertiary-fixed-variant": "#005046", "surface-dim": "#dcd9d9", "on-tertiary": "#ffffff", "surface-variant": "#e5e2e1", "on-secondary": "#ffffff", "status-success": "#2E7D32", "secondary-fixed-dim": "#fbbd00", "on-surface": "#1b1b1c", "on-primary-fixed": "#40000b", "surface-container-low": "#f6f3f2", "on-secondary-fixed": "#261a00", "primary-fixed": "#ffdada", "tertiary-container": "#005348", "border": "#E5E0DA", "primary-fixed-dim": "#ffb3b4", "outline": "#8b7171", "tertiary": "#003a32", "on-primary-container": "#ff9da0", "inverse-on-surface": "#f3f0ef", "surface-container-high": "eae7e7", "surface-bright": "#fcf9f8", "primary": "#6b0119", "status-error": "#B3261E", "outline-variant": "#debfbf", "on-primary-fixed-variant": "#881c2b", "on-secondary-fixed-variant": "#5b4300", "error-container": "#ffdad6", "primary-container": "#8b1e2d", "on-background": "#1b1b1c", "text-muted": "#6B6B6B", "tertiary-fixed-dim": "#90d3c5", "primary-dark": "#6E1824", "error": "#ba1a1a", "status-warning": "#B26A00", "tertiary-fixed": "#acf0e0", "surface-tint": "#a93441", "secondary-container": "#febf00", "background": "#fcf9f8", "on-tertiary-container": "#83c5b7", "surface-container-highest": "#e5e2e1", "on-primary": "#ffffff", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-mobile": "1rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-md": "1rem", "margin": "2rem", "gutter": "1.5rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xl": "2.5rem" }, "fontFamily": { "body-default": [ "\"Source Sans 3\"" ], "body-default-bold": [ "\"Source Sans 3\"" ], "title-desk": [ "\"Source Sans 3\"" ], "headline-lg": [ "\"Source Sans 3\"" ], "headline-lg-mobile": [ "\"Source Sans 3\"" ], "caption": [ "\"Source Sans 3\"" ], "label-operational": [ "\"Source Sans 3\"" ], "label-default": [ "\"Source Sans 3\"" ], "body-operational-bold": [ "\"Source Sans 3\"" ], "headline-md": [ "\"Source Sans 3\"" ], "headline-xl": [ "\"Source Sans 3\"" ], "body-operational": [ "\"Source Sans 3\"" ], "headline-xl-mobile": [ "\"Source Sans 3\"" ] }, "fontSize": { "body-default": [ "16px", { "lineHeight": "24px", "fontWeight": "400" } ], "body-default-bold": [ "16px", { "lineHeight": "24px", "fontWeight": "600" } ], "title-desk": [ "20px", { "lineHeight": "26px", "fontWeight": "600" } ], "headline-lg": [ "28px", { "lineHeight": "36px", "fontWeight": "600" } ], "headline-lg-mobile": [ "24px", { "lineHeight": "32px", "fontWeight": "600" } ], "caption": [ "14px", { "lineHeight": "18px", "fontWeight": "400" } ], "label-operational": [ "18px", { "lineHeight": "24px", "fontWeight": "600" } ], "label-default": [ "16px", { "lineHeight": "20px", "fontWeight": "500" } ], "body-operational-bold": [ "18px", { "lineHeight": "26px", "fontWeight": "600" } ], "headline-md": [ "22px", { "lineHeight": "28px", "fontWeight": "600" } ], "headline-xl": [ "36px", { "lineHeight": "44px", "fontWeight": "700" } ], "body-operational": [ "18px", { "lineHeight": "26px", "fontWeight": "400" } ], "headline-xl-mobile": [ "28px", { "lineHeight": "36px", "fontWeight": "700" } ] } } } };</script></head><body class="bg-background font-body-default text-body-default text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-primary-container text-on-primary shadow-[0_1px_8px_rgba(0,0,0,0.08)]"><div class="h-20 w-full px-gutter max-w-[1280px] mx-auto flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg flex-shrink-0"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded bg-primary-dark flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[24px]">local_library</span></div><div class="flex flex-col leading-tight"><span class="font-headline-md text-headline-md font-bold tracking-tight text-on-primary leading-none">BIBLIOTECA</span><span class="font-caption text-caption text-on-primary-container leading-none pt-space-xs">Sistema Universitario</span></div></div><nav class="hidden lg:flex items-center gap-space-xs ml-space-md" data-active-classes="bg-primary text-on-primary font-body-default-bold"><a class="px-space-md py-space-sm rounded-lg text-on-primary font-body-default text-body-default transition-colors hover:bg-primary hover:text-on-primary" data-path="catalogo" href="#">Catálogo</a><a class="px-space-md py-space-sm rounded-lg text-on-primary font-body-default text-body-default transition-colors hover:bg-primary hover:text-on-primary" data-path="mis-prestamos" href="#">Mis Préstamos</a><a class="px-space-md py-space-sm rounded-lg text-on-primary font-body-default text-body-default transition-colors hover:bg-primary hover:text-on-primary" data-path="reservas" href="#">Reservas</a><a class="px-space-md py-space-sm rounded-lg text-on-primary font-body-default text-body-default transition-colors hover:bg-primary hover:text-on-primary" data-path="recursos-digitales" href="#">Recursos Digitales</a><a class="px-space-md py-space-sm rounded-lg text-on-primary font-body-default text-body-default transition-colors hover:bg-primary hover:text-on-primary" data-path="ayuda" href="#">Ayuda</a></nav></div><div class="flex items-center gap-space-md flex-shrink-0"><button aria-label="Búsqueda rápida" class="w-10 h-10 rounded-lg flex items-center justify-center text-on-primary hover:bg-primary hover:text-on-primary transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">search</span></button><button aria-label="Notificaciones" class="w-10 h-10 rounded-lg flex items-center justify-center text-on-primary hover:bg-primary hover:text-on-primary transition-colors relative" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="flex items-center gap-space-sm bg-primary-dark pl-space-md pr-space-xs py-space-xs rounded-full"><div class="flex flex-col text-right leading-tight hidden sm:flex"><span class="font-label-default text-label-default text-on-primary leading-none">Carlos Mendoza</span><span class="font-caption text-caption text-on-primary-container leading-none pt-space-xs">Estudiante</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full max-w-[1280px] mx-auto px-gutter py-space-xl flex flex-col gap-space-xl">
+<!-- ENCABEZADO DE SECCIÓN Y METRICAS -->
+<header class="flex flex-col gap-space-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="flex items-center gap-space-sm text-primary">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+<span class="font-label-default text-label-default uppercase tracking-wider">Portal del Usuario • Matrícula U-20210894</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface">Mis Préstamos, Reservas y Multas</h1>
+<p class="font-body-default text-body-default text-text-muted">
+            Gestiona tus ejemplares activos, el historial de préstamos, el retiro de reservas en mostrador y el estado de solvencia de tu cuenta universitaria.
+          </p>
+</div>
+<div class="flex items-center gap-space-sm self-start md:self-auto bg-surface-container px-space-md py-space-sm rounded-lg">
+<span class="material-symbols-outlined text-primary text-[22px]">calendar_today</span>
+<div class="flex flex-col text-left">
+<span class="font-caption text-caption text-text-muted leading-none">Semestre Académico II-2025</span>
+<span class="font-body-default-bold text-body-default-bold text-on-surface leading-tight">Ciclo Regular • Activo</span>
+</div>
+</div>
+</div>
+<!-- BANNER DE ADVERTENCIA CRÍTICA: CUENTA CON RETRASO / MULTA -->
+<section aria-labelledby="alerta-multa" class="w-full bg-[#FFF4F2] rounded-xl p-space-lg shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-2 bg-status-error"></div>
+<div class="flex items-start gap-space-md pl-space-xs">
+<div class="w-12 h-12 rounded-lg bg-status-error/10 text-status-error flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[28px]">report_problem</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="font-body-operational-bold text-body-operational-bold text-status-error" id="alerta-multa">
+                Retraso de entrega registrado: Multa acumulada de $1.50 USD
+              </span>
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-status-error text-on-error font-caption text-caption">
+<span class="material-symbols-outlined text-[14px]">warning</span> Cuenta Restringida
+              </span>
+</div>
+<p class="font-body-default text-body-default text-on-surface max-w-3xl">
+              Tienes 1 ejemplar de <em class="font-body-default-bold">Física Universitaria con Física Moderna</em> con 3 días de retraso. Conforme al Reglamento de Biblioteca, los nuevos préstamos presenciales y digitales quedan suspendidos hasta saldar el monto y entregar la obra.
+            </p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-sm w-full md:w-auto flex-shrink-0">
+<button class="min-h-[48px] px-space-lg rounded-lg bg-status-error text-on-error font-label-operational text-label-operational flex items-center justify-center gap-space-sm hover:opacity-95 transition-opacity shadow-sm" id="btn-guia-caja" type="button">
+<span class="material-symbols-outlined text-[20px]">point_of_sale</span>
+<span>Ver instrucciones de caja</span>
+</button>
+</div>
+</section>
+<!-- TARJETAS MÉTRICAS DE ESTADO (KPIs) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<!-- Tarjeta 1: Préstamos Activos -->
+<article class="bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-default text-label-default text-text-muted">Préstamos Activos</span>
+<div class="flex items-baseline gap-space-sm mt-space-xs">
+<span class="font-headline-xl text-headline-xl text-on-surface">3</span>
+<span class="font-body-default text-body-default text-text-muted">de 5 permitidos</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">menu_book</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-status-warning font-body-default-bold text-body-default-bold pt-space-xs">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+<span>1 ejemplar próximo a vencer</span>
+</div>
+</article>
+<!-- Tarjeta 2: Reservas Listas -->
+<article class="bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-default text-label-default text-text-muted">Reservas Pendientes de Retiro</span>
+<div class="flex items-baseline gap-space-sm mt-space-xs">
+<span class="font-headline-xl text-headline-xl text-status-success">2</span>
+<span class="font-body-default text-body-default text-text-muted">en estantería de recepción</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-lg bg-[#E8F5E9] text-status-success flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">inventory_2</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-status-success font-body-default-bold text-body-default-bold pt-space-xs">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span>Disponibles en Mostrador Central</span>
+</div>
+</article>
+<!-- Tarjeta 3: Multas & Deuda -->
+<article class="bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-md">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-default text-label-default text-text-muted">Saldo Pendiente de Multas</span>
+<div class="flex items-baseline gap-space-sm mt-space-xs">
+<span class="font-headline-xl text-headline-xl text-status-error">$1.50</span>
+<span class="font-body-default text-body-default text-text-muted">USD</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-lg bg-[#FFEBEE] text-status-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[26px]">payments</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-status-error font-body-default-bold text-body-default-bold pt-space-xs">
+<span class="material-symbols-outlined text-[20px]">error_outline</span>
+<span>Tarifa: $0.50 por día hábil de demora</span>
+</div>
+</article>
+</div>
+</header>
+<!-- SISTEMA DE PESTAÑAS (TABS) -->
+<nav aria-label="Secciones del panel estudiantil" class="flex items-center gap-space-sm overflow-x-auto pb-1">
+<button class="tab-btn active px-space-lg py-space-sm rounded-lg font-body-operational-bold text-body-operational-bold transition-all bg-primary-container text-on-primary flex items-center gap-space-sm min-h-[48px]" data-tab="tab-prestamos" type="button">
+<span class="material-symbols-outlined text-[20px]">local_library</span>
+<span>Mis Préstamos</span>
+<span class="ml-space-xs px-2 py-0.5 rounded-full bg-on-primary/20 text-on-primary font-caption text-caption">3</span>
+</button>
+<button class="tab-btn px-space-lg py-space-sm rounded-lg font-body-operational-bold text-body-operational-bold transition-all text-on-surface hover:bg-surface-container flex items-center gap-space-sm min-h-[48px]" data-tab="tab-reservas" type="button">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+<span>Mis Reservas</span>
+<span class="ml-space-xs px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-caption text-caption">2</span>
+</button>
+<button class="tab-btn px-space-lg py-space-sm rounded-lg font-body-operational-bold text-body-operational-bold transition-all text-on-surface hover:bg-surface-container flex items-center gap-space-sm min-h-[48px]" data-tab="tab-multas" type="button">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+<span>Mis Multas y Sanciones</span>
+<span class="ml-space-xs px-2 py-0.5 rounded-full bg-status-error/15 text-status-error font-caption text-caption">1</span>
+</button>
+<button class="tab-btn px-space-lg py-space-sm rounded-lg font-body-operational-bold text-body-operational-bold transition-all text-on-surface hover:bg-surface-container flex items-center gap-space-sm min-h-[48px]" data-tab="tab-historial" type="button">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span>Historial de Devoluciones</span>
+</button>
+</nav>
+<!-- PESTAÑA 1: MIS PRÉSTAMOS ACTIVOS -->
+<div class="tab-content flex flex-col gap-space-lg" id="tab-prestamos">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Libros en Posesión</h2>
+<p class="font-body-default text-body-default text-text-muted">Consulta las fechas límite de entrega física y gestiona renovaciones automáticas.</p>
+</div>
+<div class="flex items-center gap-space-sm text-text-muted font-body-default text-body-default bg-surface px-space-md py-space-sm rounded-lg">
+<span class="material-symbols-outlined text-[20px] text-primary">info</span>
+<span>Máximo 2 renovaciones por libro si no tiene reservas de terceros.</span>
+</div>
+</div>
+<!-- TABLA DETALLADA DE EJEMPLARES PRESTADOS -->
+<div class="w-full bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[900px]">
+<thead>
+<tr class="bg-surface text-on-surface font-body-operational-bold text-body-operational-bold h-14">
+<th class="px-space-lg py-space-sm text-left">Ejemplar y Signatura</th>
+<th class="px-space-md py-space-sm text-left">Fec. Préstamo</th>
+<th class="px-space-md py-space-sm text-left">Límite Devolución</th>
+<th class="px-space-md py-space-sm text-left">Estado del Préstamo</th>
+<th class="px-space-lg py-space-sm text-right">Acción Operativa</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<!-- FILA 1: EJEMPLAR VENCIDO CON MULTA -->
+<tr class="h-24 hover:bg-surface-container-low transition-colors bg-[#FFFBFB]">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-16 rounded bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Cover of standard university textbook Sears and Zemansky University Physics, bold educational cover design, deep burgundy and gold graphic tones, academic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyn0VoDsu5O_S7-AEi5tYN0Qg1GLHTd9spnYnF80zCtWVW7F8I3H1MHvnxX0i1ksCSy4aArocaOrBXf8E4KneGCoA4dClXF4SMhHTzPUg0H-U_6IxDu767cdIQr8WrRry6XPCXLpuiFGTSRYGVfyPDG3ED2snwPBEeftMOLNtyDYmuECnS_mZuym9PWZtdfZSBOEbGLrXzLpzh-xI1keOnPVlDSxa6Mzu_l15nCaQXvDwY1MYmal1S"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-operational-bold text-body-operational-bold text-on-surface truncate">Física Universitaria con Física Moderna (Vol. 1)</span>
+<span class="font-body-default text-body-default text-text-muted">Hugh D. Young &amp; Roger A. Freedman</span>
+<div class="flex items-center gap-space-xs mt-1">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-caption text-caption text-on-surface font-mono">FIS-530.1-YOU</span>
+<span class="font-caption text-caption text-text-muted">• Cód: #BC-09241</span>
+</div>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-body-default text-body-default text-on-surface">
+                  03 Oct 2025
+                </td>
+<td class="px-space-md py-space-md">
+<div class="flex flex-col">
+<span class="font-body-operational-bold text-body-operational-bold text-status-error">18 Oct 2025</span>
+<span class="font-caption text-caption text-status-error font-medium">Hace 3 días</span>
+</div>
+</td>
+<td class="px-space-md py-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-[#FFEBEE] text-status-error font-body-default-bold text-body-default-bold">
+<span class="material-symbols-outlined text-[18px]">error</span>
+<span>Vencido (3 días atraso)</span>
+</div>
+</td>
+<td class="px-space-lg py-space-md text-right">
+<div class="flex flex-col items-end gap-space-xs">
+<span class="font-caption text-caption text-status-error font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">block</span> No renovable
+                    </span>
+<a class="text-primary hover:underline font-body-default-bold text-body-default flex items-center gap-1" href="#tab-multas">
+<span>Pagar en Mostrador</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</td>
+</tr>
+<!-- FILA 2: PRÓXIMO A VENCER (RENOVABLE) -->
+<tr class="h-24 hover:bg-surface-container-low transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-16 rounded bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Textbook cover for Stewart Calculus Early Transcendentals, elegant mathematical geometric graphic in wine red and muted warm tones, clean typography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGeiWxaKWMKlTu1MpHRom-HQTRsnacsh9LoGbOACD5JBrp8janYAnKjsuSEJRgaXHapGZf-XrjIPLzgxb7BR-UCraSaQbhybdf_7NNzNd6xeFjeor_5SOfqJFPCK6JUzBxKdw5RGVXZKM4gPXv__tzNdbRZi1PT-BeVHB5v64g8bVbf2NjebTECBjmawQA7x6ZcAlKfl7GuYTaSPF3RHyfkfDNWrQ5hlk5jb_0X3vFuCuDOKUvMw_e"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-operational-bold text-body-operational-bold text-on-surface truncate">Cálculo de Una Variable: Trascendentes Tempranas</span>
+<span class="font-body-default text-body-default text-text-muted">James Stewart (8ª Edición)</span>
+<div class="flex items-center gap-space-xs mt-1">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-caption text-caption text-on-surface font-mono">MAT-510.4-STE</span>
+<span class="font-caption text-caption text-text-muted">• Cód: #BC-11409</span>
+</div>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-body-default text-body-default text-on-surface">
+                  07 Oct 2025
+                </td>
+<td class="px-space-md py-space-md">
+<div class="flex flex-col">
+<span class="font-body-operational-bold text-body-operational-bold text-status-warning">23 Oct 2025</span>
+<span class="font-caption text-caption text-status-warning font-medium">Quedan 2 días</span>
+</div>
+</td>
+<td class="px-space-md py-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-[#FFF8E1] text-status-warning font-body-default-bold text-body-default-bold">
+<span class="material-symbols-outlined text-[18px]">alarm</span>
+<span>Próximo a vencer</span>
+</div>
+</td>
+<td class="px-space-lg py-space-md text-right">
+<button class="min-h-[48px] px-space-lg rounded-lg text-primary bg-surface hover:bg-primary hover:text-on-primary font-body-operational-bold text-body-operational-bold transition-all shadow-sm inline-flex items-center justify-center gap-space-xs" onclick="renovarLibro('MAT-510.4-STE')" type="button">
+<span class="material-symbols-outlined text-[20px]">autorenew</span>
+<span>Renovar Préstamo</span>
+</button>
+</td>
+</tr>
+<!-- FILA 3: EN TIEMPO REGULAR -->
+<tr class="h-24 hover:bg-surface-container-low transition-colors">
+<td class="px-space-lg py-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-16 rounded bg-surface-container flex-shrink-0 flex items-center justify-center overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Computer science textbook cover of Database System Concepts by Silberschatz, minimal architectural database diagram, institutional maroon design accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGlTXZBKqSJllBeIU62GElKE5HxO7TX5FJqoZ3_pQ594Een37m4ZFjhQAwpoIb5tDBk4nSWZILnp4gM4f_FmtnsN52QAQwl0MWZT8AQezjxtZVbNjEcC5ZP-NPpCroGPVKdMEvFyn5_-oVapnLEyMnItA2vtcQWDrIbq-h1fAtby5dmbUo5njPn7k4sdtOCam8fMNwMQSYRXSIOP0XUWVcfcupdUwi6vAfw0yNOz-T7c1eiCJeJhg2"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-operational-bold text-body-operational-bold text-on-surface truncate">Fundamentos de Sistemas de Bases de Datos</span>
+<span class="font-body-default text-body-default text-text-muted">Abraham Silberschatz, Henry F. Korth</span>
+<div class="flex items-center gap-space-xs mt-1">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-caption text-caption text-on-surface font-mono">INF-005.7-SIL</span>
+<span class="font-caption text-caption text-text-muted">• Cód: #BC-08812</span>
+</div>
+</div>
+</div>
+</td>
+<td class="px-space-md py-space-md font-body-default text-body-default text-on-surface">
+                  14 Oct 2025
+                </td>
+<td class="px-space-md py-space-md">
+<div class="flex flex-col">
+<span class="font-body-operational-bold text-body-operational-bold text-status-success">29 Oct 2025</span>
+<span class="font-caption text-caption text-status-success font-medium">Quedan 8 días</span>
+</div>
+</td>
+<td class="px-space-md py-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-[#E8F5E9] text-status-success font-body-default-bold text-body-default-bold">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>En tiempo</span>
+</div>
+</td>
+<td class="px-space-lg py-space-md text-right">
+<button class="min-h-[48px] px-space-lg rounded-lg text-primary bg-surface hover:bg-primary hover:text-on-primary font-body-operational-bold text-body-operational-bold transition-all shadow-sm inline-flex items-center justify-center gap-space-xs" onclick="renovarLibro('INF-005.7-SIL')" type="button">
+<span class="material-symbols-outlined text-[20px]">autorenew</span>
+<span>Renovar Préstamo</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- PESTAÑA 2: MIS RESERVAS VIGENTES -->
+<div class="tab-content flex flex-col gap-space-lg hidden" id="tab-reservas">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Material Reservado para Retiro</h2>
+<p class="font-body-default text-body-default text-text-muted">Presenta tu carnet universitario o código QR en el mostrador para retirar el material asignado.</p>
+</div>
+<div class="flex items-center gap-space-xs text-status-info font-body-default-bold text-body-default-bold bg-[#E3F2FD] px-space-md py-space-sm rounded-lg">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+<span>Plazo de recogida: 48 horas tras notificación</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+<!-- Tarjeta de Reserva 1 -->
+<article class="bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg">
+<div class="flex items-start gap-space-md">
+<div class="w-16 h-20 rounded bg-surface-container flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Cover of clean engineering manual on Artificial Intelligence Modern Approach by Russell and Norvig, academic styling, neutral warm tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsKreDt3dalrYx6wVo0QmEmPSdPb6OYZPeFIV42Z6-6WTz7XsE5DMppTQhFpX1SlQzWl2xGn__rJ6J5W1XCZDN0-4Rl9Qf9k6qXIWXjQvTmT1W8p3ZMVPGBe7tRo0AFgAxH57cDEFsblMxi3reryJAAcM1npQMImtbUEfwIHAFUXmHrqJfEc9m5DzT7zqMtJFjKh3NkzaLDy2tE5LzkRo_-MOMHgB-YMHQ-_RT7UbUOjK2rQieSBWW"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="inline-flex items-center gap-1 text-status-success font-body-default-bold text-body-default-bold mb-1">
+<span class="material-symbols-outlined text-[18px]">verified</span> Listo para retirar
+              </span>
+<h3 class="font-body-operational-bold text-body-operational-bold text-on-surface leading-tight">Inteligencia Artificial: Un Enfoque Moderno</h3>
+<p class="font-body-default text-body-default text-text-muted">Stuart Russell &amp; Peter Norvig</p>
+<span class="font-caption text-caption text-text-muted mt-1 font-mono">Signatura: INF-006.3-RUS</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-lg flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-caption font-caption text-text-muted">
+<span>Fecha de Solicitud:</span>
+<span class="font-body-default-bold text-on-surface">19 Oct 2025</span>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-text-muted">
+<span>Límite de Retiro en Mostrador:</span>
+<span class="font-body-default-bold text-status-warning">23 Oct 2025, 18:00 hrs</span>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-text-muted">
+<span>Ubicación de entrega:</span>
+<span class="font-body-default-bold text-on-surface">Ventanilla 2 - Campus Central</span>
+</div>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-xs">
+<button class="min-h-[48px] px-space-lg rounded-lg text-primary bg-surface hover:bg-surface-container font-body-operational-bold text-body-operational-bold transition-colors" onclick="cancelarReserva('INF-006.3-RUS')" type="button">
+              Cancelar Reserva
+            </button>
+<button class="min-h-[48px] px-space-lg rounded-lg bg-primary text-on-primary font-body-operational-bold text-body-operational-bold flex items-center gap-space-xs hover:bg-primary-dark transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[20px]">qr_code</span>
+<span>Generar Pase</span>
+</button>
+</div>
+</article>
+<!-- Tarjeta de Reserva 2 -->
+<article class="bg-surface rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg">
+<div class="flex items-start gap-space-md">
+<div class="w-16 h-20 rounded bg-surface-container flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Cover of Principles of Economics by N. Gregory Mankiw, authoritative economics textbook cover with elegant graphs in crimson and cream." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCz5zldrUvIUwY_dhuY5TTmo_cvz0r53hUv_VUjjs7wXB37UAsin6kaEwzYtAA_kUcXS4Bt8QU09rT22BF6BY7DHpdmLaykUBiDH-a6rWIkc3eq7gvWbbbDkbaNK_XhG6EuGiRJprz-Uixu1KkSWByzW6bF4vPwqF4qiMnI9w-xhoegP9EWgZq_IBhOtm7HPO2xbzYjVQkRBbwdfac4lRkbUF5G_Wt7gydhJPgwBqqD17P35M6Ut_Zw"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="inline-flex items-center gap-1 text-status-success font-body-default-bold text-body-default-bold mb-1">
+<span class="material-symbols-outlined text-[18px]">verified</span> Listo para retirar
+              </span>
+<h3 class="font-body-operational-bold text-body-operational-bold text-on-surface leading-tight">Principios de Economía (7ª Edición)</h3>
+<p class="font-body-default text-body-default text-text-muted">N. Gregory Mankiw</p>
+<span class="font-caption text-caption text-text-muted mt-1 font-mono">Signatura: ECO-330.1-MAN</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-md rounded-lg flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-caption font-caption text-text-muted">
+<span>Fecha de Solicitud:</span>
+<span class="font-body-default-bold text-on-surface">20 Oct 2025</span>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-text-muted">
+<span>Límite de Retiro en Mostrador:</span>
+<span class="font-body-default-bold text-status-warning">24 Oct 2025, 20:00 hrs</span>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-text-muted">
+<span>Ubicación de entrega:</span>
+<span class="font-body-default-bold text-on-surface">Ventanilla 1 - Sala General</span>
+</div>
+</div>
+<div class="flex items-center justify-end gap-space-sm pt-space-xs">
+<button class="min-h-[48px] px-space-lg rounded-lg text-primary bg-surface hover:bg-surface-container font-body-operational-bold text-body-operational-bold transition-colors" onclick="cancelarReserva('ECO-330.1-MAN')" type="button">
+              Cancelar Reserva
+            </button>
+<button class="min-h-[48px] px-space-lg rounded-lg bg-primary text-on-primary font-body-operational-bold text-body-operational-bold flex items-center gap-space-xs hover:bg-primary-dark transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[20px]">qr_code</span>
+<span>Generar Pase</span>
+</button>
+</div>
+</article>
+</div>
+</div>
+<!-- PESTAÑA 3: MIS MULTAS Y SANCIONES -->
+<div class="tab-content flex flex-col gap-space-lg hidden" id="tab-multas">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Estado de Multas y Restricciones</h2>
+<p class="font-body-default text-body-default text-text-muted">Desglose de cargos por retraso de devolución y métodos de pago oficiales habilitados.</p>
+</div>
+</div>
+<!-- DESGLOSE DE MULTAS -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="bg-surface px-space-lg py-space-md font-body-operational-bold text-body-operational-bold text-on-surface flex items-center justify-between">
+<span>Cargos Acumulados no Saldados</span>
+<span class="text-status-error font-headline-md text-headline-md leading-none">$1.50 USD</span>
+</div>
+<div class="p-space-lg flex flex-col gap-space-md">
+<div class="flex items-start justify-between py-space-sm">
+<div class="flex flex-col gap-space-xs">
+<span class="font-body-operational-bold text-body-operational-bold text-on-surface">Retraso: Física Universitaria (Vol. 1)</span>
+<span class="font-caption text-caption text-text-muted">Fecha estipulada: 18 Oct 2025 • Días de mora computados: 3 días</span>
+<span class="text-caption font-caption text-text-muted">Tarifa oficial establecida en Reglamento Bibliotecario: $0.50 por jornada lectiva.</span>
+</div>
+<span class="font-body-operational-bold text-body-operational-bold text-status-error">$1.50</span>
+</div>
+</div>
+</div>
+<!-- NOTA INSTITUCIONAL SOBRE CONDONACIONES Y PAGO -->
+<div class="bg-surface p-space-lg rounded-xl flex items-start gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">policy</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-body-operational-bold text-body-operational-bold text-on-surface">Reglamento General de Préstamos (Art. 42)</span>
+<p class="font-body-default text-body-default text-text-muted">
+                Para justificaciones médicas u oficiales, favor de presentar comprobante sellado por Decanato o Dirección de Asuntos Estudiantiles en el mostrador central dentro de los siguientes 5 días hábiles.
+              </p>
+</div>
+</div>
+</div>
+<!-- MÉTODOS DE PAGO Y CAJA -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<div class="bg-surface rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<span class="font-title-desk text-title-desk text-on-surface">Opciones de Pago</span>
+<div class="flex flex-col gap-space-sm text-body-default font-body-default text-on-surface">
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">store</span>
+<div>
+<span class="font-body-default-bold">Ventanilla de Caja (Edificio A)</span>
+<p class="text-caption font-caption text-text-muted">Pago en efectivo o tarjeta institucional. Lunes a Viernes 08:00 - 18:00.</p>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">credit_card</span>
+<div>
+<span class="font-body-default-bold">Portal Bancario Universitario</span>
+<p class="text-caption font-caption text-text-muted">Código NPE disponible con tu código de estudiante U-20210894.</p>
+</div>
+</div>
+</div>
+<button class="w-full min-h-[48px] rounded-lg bg-primary text-on-primary font-label-operational text-label-operational flex items-center justify-center gap-space-xs hover:bg-primary-dark transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[20px]">download</span>
+<span>Descargar Hoja de Pago</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- PESTAÑA 4: HISTORIAL DE PRÉSTAMOS -->
+<div class="tab-content flex flex-col gap-space-lg hidden" id="tab-historial">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Historial de Préstamos Concluidos</h2>
+<p class="font-body-default text-body-default text-text-muted">Registro consolidado de todas tus devoluciones y solvencias anteriores.</p>
+</div>
+</div>
+<div class="w-full bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[700px]">
+<thead>
+<tr class="bg-surface text-on-surface font-body-operational-bold text-body-operational-bold h-14">
+<th class="px-space-lg py-space-sm">Título del Ejemplar</th>
+<th class="px-space-md py-space-sm">Signatura</th>
+<th class="px-space-md py-space-sm">Fecha Devolución</th>
+<th class="px-space-lg py-space-sm text-right">Estado Final</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-body-default font-body-default text-on-surface">
+<tr class="h-16 hover:bg-surface-container-low transition-colors">
+<td class="px-space-lg py-space-md font-body-default-bold">Estructuras de Datos en C++</td>
+<td class="px-space-md py-space-md font-mono text-caption font-caption text-text-muted">INF-005.1-JOZ</td>
+<td class="px-space-md py-space-md">28 Sep 2025</td>
+<td class="px-space-lg py-space-md text-right">
+<span class="inline-flex items-center gap-1 text-status-success font-body-default-bold text-body-default">
+<span class="material-symbols-outlined text-[18px]">check_circle</span> Devuelto a tiempo
+                  </span>
+</td>
+</tr>
+<tr class="h-16 hover:bg-surface-container-low transition-colors">
+<td class="px-space-lg py-space-md font-body-default-bold">Álgebra Lineal con Aplicaciones</td>
+<td class="px-space-md py-space-md font-mono text-caption font-caption text-text-muted">MAT-512.5-GRO</td>
+<td class="px-space-md py-space-md">15 Sep 2025</td>
+<td class="px-space-lg py-space-md text-right">
+<span class="inline-flex items-center gap-1 text-status-success font-body-default-bold text-body-default">
+<span class="material-symbols-outlined text-[18px]">check_circle</span> Devuelto a tiempo
+                  </span>
+</td>
+</tr>
+<tr class="h-16 hover:bg-surface-container-low transition-colors">
+<td class="px-space-lg py-space-md font-body-default-bold">Química General Universitaria</td>
+<td class="px-space-md py-space-md font-mono text-caption font-caption text-text-muted">QUI-540.2-PET</td>
+<td class="px-space-md py-space-md">22 Ago 2025</td>
+<td class="px-space-lg py-space-md text-right">
+<span class="inline-flex items-center gap-1 text-status-success font-body-default-bold text-body-default">
+<span class="material-symbols-outlined text-[18px]">check_circle</span> Devuelto a tiempo
+                  </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- DIÁLOGO MODAL: RENOVACIÓN DE PRÉSTAMO -->
+<dialog class="p-0 rounded-xl bg-surface-container-lowest text-on-surface shadow-2xl backdrop:bg-inverse-surface/60 max-w-lg w-full m-auto" id="modal-renovacion">
+<div class="p-space-xl flex flex-col gap-space-lg">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-lg bg-primary-container text-on-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[28px]">autorenew</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">Confirmar Renovación</h3>
+<p class="font-body-default text-body-default text-text-muted">
+            Se asignará una extensión estándar de <strong class="font-body-default-bold text-on-surface">7 días naturales adicionales</strong> a la fecha de entrega original.
+          </p>
+</div>
+</div>
+<div class="bg-surface p-space-md rounded-lg flex flex-col gap-space-xs font-body-default text-body-default">
+<div class="flex justify-between">
+<span class="text-text-muted">Signatura:</span>
+<span class="font-mono font-bold text-on-surface" id="modal-libro-signatura">MAT-510.4-STE</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-muted">Nueva Fecha de Entrega:</span>
+<span class="font-body-default-bold text-status-success">30 Octubre 2025 (21:30 hrs)</span>
+</div>
+</div>
+<div class="flex items-center justify-end gap-space-md pt-space-xs">
+<button class="min-h-[48px] px-space-lg rounded-lg text-primary bg-surface hover:bg-surface-container font-body-operational-bold text-body-operational-bold transition-colors" onclick="cerrarModal('modal-renovacion')" type="button">
+          Cancelar
+        </button>
+<button class="min-h-[48px] px-space-lg rounded-lg bg-primary text-on-primary font-body-operational-bold text-body-operational-bold hover:bg-primary-dark transition-colors shadow-sm" onclick="ejecutarRenovacion()" type="button">
+          Aceptar Extensión
+        </button>
+</div>
+</div>
+</dialog>
+<!-- NOTIFICACIÓN TOAST ACCESIBLE -->
+<div aria-live="polite" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 bg-inverse-surface text-inverse-on-surface px-space-lg py-space-md rounded-xl shadow-xl flex items-center gap-space-md" id="toast-notificacion" role="status">
+<span class="material-symbols-outlined text-secondary-container text-[24px]">info</span>
+<span class="font-body-default-bold text-body-default" id="toast-mensaje">Acción completada con éxito.</span>
+</div>
+</div>
+<script>
+  // CONTROLADOR DE PESTAÑAS (TABS)
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-tab');
+
+      // Actualizar estado de botones
+      tabs.forEach(t => {
+        t.classList.remove('bg-primary-container', 'text-on-primary');
+        t.classList.add('text-on-surface', 'hover:bg-surface-container');
+      });
+      tab.classList.remove('text-on-surface', 'hover:bg-surface-container');
+      tab.classList.add('bg-primary-container', 'text-on-primary');
+
+      // Actualizar visibilidad de paneles
+      contents.forEach(c => {
+        c.classList.add('hidden');
+      });
+      const activeContent = document.getElementById(targetId);
+      if (activeContent) {
+        activeContent.classList.remove('hidden');
+      }
+    });
+  });
+
+  // BOTÓN ACCESO DIRECTO A MULTAS DESDE BANNER
+  const btnCaja = document.getElementById('btn-guia-caja');
+  if (btnCaja) {
+    btnCaja.addEventListener('click', () => {
+      const tabMultasBtn = document.querySelector('[data-tab="tab-multas"]');
+      if (tabMultasBtn) {
+        tabMultasBtn.click();
+        window.scrollTo({ top: tabMultasBtn.offsetTop - 100, behavior: 'smooth' });
+      }
+    });
+  }
+
+  // MODAL DE RENOVACIÓN
+  function renovarLibro(signatura) {
+    const modal = document.getElementById('modal-renovacion');
+    const labelSig = document.getElementById('modal-libro-signatura');
+    if (labelSig) labelSig.textContent = signatura;
+    if (modal) modal.showModal();
+  }
+
+  function cerrarModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.close();
+  }
+
+  function ejecutarRenovacion() {
+    cerrarModal('modal-renovacion');
+    mostrarToast('Préstamo renovado exitosamente por 7 días lectivos.');
+  }
+
+  function cancelarReserva(signatura) {
+    if (confirm('¿Confirmas la cancelación de la reserva para el ejemplar ' + signatura + '? El turno pasará al siguiente estudiante.')) {
+      mostrarToast('Reserva cancelada correctamente.');
+    }
+  }
+
+  // MENSAJERÍA TOAST
+  function mostrarToast(mensaje) {
+    const toast = document.getElementById('toast-notificacion');
+    const msg = document.getElementById('toast-mensaje');
+    if (toast && msg) {
+      msg.textContent = mensaje;
+      toast.classList.remove('translate-y-32', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-32', 'opacity-0');
+      }, 4000);
+    }
+  }
+</script></main><footer class="w-full bg-surface-container text-on-surface py-space-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full max-w-[1280px] mx-auto px-gutter"><div class="grid grid-cols-1 md:grid-cols-12 gap-gutter pb-space-xl"><div class="md:col-span-5 flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-on-primary text-[20px]">local_library</span></div><span class="font-title-desk text-title-desk font-bold text-on-surface">Sistema de Bibliotecas</span></div><p class="font-body-default text-body-default text-text-muted max-w-md">Comprometidos con el rigor académico, la preservación del patrimonio bibliográfico y el apoyo integral a la investigación y el aprendizaje universitario.</p><div class="flex items-center gap-space-xs text-status-success font-label-default text-label-default pt-space-xs"><span class="material-symbols-outlined text-[20px]">check_circle</span><span>Portal en línea operativo</span></div></div><div class="md:col-span-4 flex flex-col gap-space-sm"><span class="font-title-desk text-title-desk font-bold text-on-surface">Horario de Atención</span><div class="font-body-default text-body-default text-text-muted space-y-space-xs"><p><strong class="font-body-default-bold text-on-surface">Lunes a Viernes:</strong> 07:00 - 21:30 hrs</p><p><strong class="font-body-default-bold text-on-surface">Sábados:</strong> 08:30 - 14:00 hrs</p><p><strong class="font-body-default-bold text-on-surface">Salas de Estudio 24/7:</strong> Acceso con credencial institucional</p></div></div><div class="md:col-span-3 flex flex-col gap-space-sm"><span class="font-title-desk text-title-desk font-bold text-on-surface">Contacto y Asistencia</span><div class="font-body-default text-body-default text-text-muted space-y-space-xs"><p class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px] text-primary">mail</span>biblioteca@universidad.edu</p><p class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px] text-primary">call</span>+52 (55) 5000-8400</p><p class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px] text-primary">location_on</span>Campus Central, Edificio A</p></div></div></div><div class="pt-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md text-text-muted font-caption text-caption"><p>© 2025 Dirección General de Bibliotecas. Todos los derechos reservados.</p><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Reglamento de Préstamos</a><a class="hover:text-primary transition-colors" href="#">Privacidad de Datos</a><a class="hover:text-primary transition-colors" href="#">Accesibilidad</a></div></div></div></footer></body></html>
