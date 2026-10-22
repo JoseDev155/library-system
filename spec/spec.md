@@ -520,7 +520,7 @@ Cada herramienta lee su propia carpeta. Lo común está en `AGENTS.md` y `spec/s
 | `CLAUDE.md` | Claude Code | Importa `AGENTS.md` y añade notas específicas |
 | `.claude/` | Claude Code | `settings.json` (permisos), `rules/` (reglas por ruta) y `commands/` (como `/verify`) |
 | `.agents/` | Antigravity (Claude Code **no** la lee) | `rules/`, `workflows/` y `templates/` (archivos base para tareas futuras) |
-| `.antigravity/` | Nadie la lee de forma automática: es una carpeta de trabajo del repo | `README.md` con las notas del IDE, `context/`, `commands/` y `resources/` con los prototipos del frontend (exportaciones de Stitch o Claude Design) |
+| `.antigravity/` | Nadie la lee de forma automática: es una carpeta de trabajo del repo | `README.md` con las notas del IDE, `context/` (p. ej. `database.md`, borrador de tablas y SQL), `commands/` y `resources/` con los prototipos del frontend (exportaciones de Stitch o Claude Design) |
 | `scripts/` | Todos | `setup.sh` y `verify.sh` (mismas comprobaciones), `install-hooks.sh` y `hooks/post-commit` (sincronización GitHub → GitLab) |
 
 Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan.
@@ -569,3 +569,4 @@ Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/setting
 - **D-9 Licencia y propiedad intelectual.** Elegir licencia (ver `LICENSE.md`) y confirmar con la universidad si hay una política de propiedad intelectual sobre proyectos de curso.
 - **D-10 Escáner de seguridad de dependencias.** Elegir un escáner para la API de Bun, o usar otro mecanismo de auditoría.
 - **D-11 Oxfmt.** Confirmar que está lo bastante estable para formatear en Bun; si no, usar Prettier con Bun.
+- **D-12 Campos que piden los prototipos.** Carnet, facultad, edición, signatura, ubicación del ejemplar, forma de pago y usuario que registra el préstamo no están en la sección 8. El detalle y las columnas propuestas están en `.antigravity/context/database.md`; falta decidir cuáles entran.
