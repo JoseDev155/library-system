@@ -98,6 +98,20 @@ Reglas que no se rompen:
 - Secretos solo en variables de entorno. `.env` nunca se versiona; `.env.example` sí.
 - No registres datos personales ni tokens en logs.
 
+## Equipo virtual de agentes
+
+Cuando una tarea cae en un rol, el agente adopta sus responsabilidades y respeta sus restricciones. Las reglas comunes de este archivo aplican a todos.
+
+| Rol | Responsabilidades | Restricciones | Comandos permitidos |
+|---|---|---|---|
+| Frontend Engineer | `frontend/`: pantallas, componentes, hooks y llamadas a la API según `DESIGN.md` | No toca `backend/` ni `libs/`; no agrega colores sueltos; solo conoce mensajes y DTOs | `bun install`, `bun ci`, `bun add -E`, `bun run dev\|lint\|test\|build` |
+| Backend Developer | `backend/app/` y `libs/library_entities/`: capas, reglas de negocio, seguridad y endpoints | No toca `frontend/`; respeta las dependencias entre capas; cada endpoint declara su permiso | `uv sync`, `uv run pytest`, `uv run ruff`, `uv run fastapi dev` |
+| DBA | `backend/app/repositories/`: modelos ORM, migraciones Alembic y portabilidad entre PostgreSQL, MySQL y MariaDB | Sin SQL crudo ni tipos exclusivos de un motor; no cambia entidades sin actualizar la spec | `uv run alembic ...`, `uv run pytest` |
+| QA Engineer | Pruebas unitarias con cobertura mínima de 80 % y una prueba por RF | Nunca omite, desactiva ni pone en cuarentena una prueba para ponerla en verde | `uv run pytest --cov`, `bun run test` |
+| Documentation Writer | `spec/spec.md`, `README.md`, `DESIGN.md` y archivos de agentes | La spec manda; no inventa comportamiento: lo anota en "Dudas abiertas" | `git diff --check` |
+
+Ningún rol ejecuta `npm`, `pnpm` ni `yarn`, ni instala dependencias sin versión exacta.
+
 ## Carpetas de agentes
 
 Lo común vive aquí y en la spec; cada carpeta solo concreta lo propio de su herramienta y no redefine reglas.
