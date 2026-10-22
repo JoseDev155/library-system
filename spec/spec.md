@@ -520,7 +520,7 @@ Cada herramienta lee su propia carpeta. Lo común está en `AGENTS.md` y `spec/s
 | `.antigravity/` | Nadie la lee de forma automática: es una carpeta de trabajo del repo | `README.md` con las notas del IDE, `context/`, `commands/` y `resources/` con los prototipos del frontend (exportaciones de Stitch o Claude Design) |
 | `scripts/` | Todos | `setup.sh` y `verify.sh`, que ejecutan las mismas comprobaciones |
 
-Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan.
+Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/settings.local.json`) no se versionan; `CLAUDE.local.example.md` es la plantilla versionada de `CLAUDE.local.md`.
 
 ## 14. Casos límite
 
