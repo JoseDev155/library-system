@@ -374,10 +374,13 @@ Las entidades son clases puras en `libs/library_entities/`: sin SQL, sin FastAPI
 | `Loan` | id, copy_id, user_id, loaned_by, loaned_at, due_at, returned_at, renewals, status | `renew()` respeta el máximo de renovaciones; `days_late(today)`. Estados: `ACTIVE`, `RETURNED` (el vencido se calcula con `due_at`) |
 | `Reservation` | id, book_id, user_id, copy_id, created_at, status, held_until | Estados: `QUEUED`, `HELD`, `FULFILLED`, `CANCELLED`, `EXPIRED` |
 | `Fine` | id, loan_id, user_id, days_late, rate_per_day, amount, status, waiver_reason, waived_by | Estados: `PENDING`, `PAID`, `WAIVED`. `pay()` y `waive(reason)`. Conserva la tarifa vigente al devolver |
-| `Payment` | id, fine_id, cashier_id, amount, method, receipt_number (único), paid_at | Un número de comprobante no se repite. `method`: `CASH`, `CARD` (voucher del POS bancario) o `TRANSFER`; solo se registra, el sistema no procesa pagos |
+| `Receipt` | id, receipt_number (único), cashier_id, method, total, paid_at | Comprobante de un cobro en caja; puede cubrir varias multas. `total` es la suma de sus pagos. `method`: `CASH`, `CARD` (voucher del POS bancario) o `TRANSFER`; solo se registra, el sistema no procesa pagos |
+| `Payment` | id, receipt_id, fine_id (único), amount | Pago de una multa dentro de un comprobante. Una multa se paga una sola vez |
 | `AuditLog` | id, user_id, action, entity, entity_id, created_at | Solo se agrega; nunca se edita |
 
 ### 8.1 Parámetros configurables
+
+Moneda: todos los importes (multas, pagos y comprobantes) están en **dólares estadounidenses (USD)**, con dos decimales.
 
 Valores por defecto **supuestos**: se validan con la biblioteca antes de usarlos y viven en configuración, no en el código.
 
@@ -391,17 +394,18 @@ Valores por defecto **supuestos**: se validan con la biblioteca antes de usarlos
 
 ### 8.2 Identificador universitario
 
-El `id` de `User` es el carnet universitario, con el formato `AAAA-II-FFF`:
+El `id` de `User` es el carnet universitario, con el formato `AAAA-II-FFF-NN`:
 
 | Parte | Significado |
 |---|---|
 | `AAAA` | Año de ingreso (estudiantes y docentes) o de contratación (personal) |
 | `II` | Iniciales de los dos apellidos, en mayúsculas y sin acentos |
 | `FFF` | Código de la facultad o unidad (sección 8.3) |
+| `NN` | Correlativo de dos dígitos que desempata cuando coinciden las tres partes anteriores; empieza en `01` |
 
-Ejemplo: Juan Armando Pérez Márquez, que ingresó en 2024 a Ingeniería y Tecnología (`101`), tiene el id `2024-PM-101`. Si la persona tiene un solo apellido, `II` usa la inicial de ese apellido seguida de `X`.
+Ejemplo: Juan Armando Pérez Márquez, que ingresó en 2024 a Ingeniería y Tecnología (`101`), tiene el id `2024-PM-101-01`; si ese año otra persona de Ingeniería con las mismas iniciales se matricula después, recibe `2024-PM-101-02`. Si la persona tiene un solo apellido, `II` usa la inicial de ese apellido seguida de `X`.
 
-La combinación puede repetirse (otra persona con las mismas iniciales, año y facultad). Regla propuesta, pendiente de confirmar en D-13: la primera persona conserva el formato simple y las siguientes reciben un correlativo, `2024-PM-101-02`, `2024-PM-101-03`, etc. El id es único, no cambia nunca y es lo que se escanea o escribe en el mostrador y en caja.
+La combinación de año, iniciales y facultad puede repetirse entre personas distintas, por eso todos los carnets llevan correlativo, empezando en `01`, y así comparten el mismo formato. El sistema asigna el id al registrar a la persona; el id es único, no cambia nunca (tampoco si la persona cambia de facultad) y es lo que se escanea o escribe en el mostrador y en caja. Si una combinación llegara a superar los 99 correlativos, se ampliaría a tres dígitos.
 
 ### 8.3 Facultades y unidades
 
@@ -458,7 +462,7 @@ Patrones: *El sistema deberá…* (siempre) · *Cuando…* (evento) · *Mientras
 
 ### Multas y pagos
 
-- **RF-17** Cuando caja registre el pago de una multa, el sistema deberá marcarla como pagada y emitir un comprobante con número único.
+- **RF-17** Cuando caja registre el cobro de una o varias multas de un usuario, el sistema deberá marcar cada multa como pagada y emitir un único comprobante con número único, con el total y la forma de pago, o no registrar nada si alguno de los pagos falla.
 - **RF-18** Cuando un administrador condone una multa, el sistema deberá exigir un motivo y registrar quién la condonó.
 
 ### Usuarios y auditoría
@@ -566,7 +570,7 @@ Queda fuera de v1 (se quita o se oculta del prototipo):
 - Exportar el catálogo, reportes y estado "suspendido" distinto de "inactivo".
 - Atajos de teclado y escáner del mostrador: no cambian la spec, pero el escáner se trata como teclado que escribe el código de inventario o el carnet.
 
-Al implementar hay que corregir también los textos de los prototipos que no corresponden: nombre de la universidad, correo y teléfono de contacto, y la moneda (los prototipos usan USD).
+Al implementar hay que corregir también los textos de los prototipos que no corresponden: nombre de la universidad, correo y teléfono de contacto, y los datos de ejemplo.
 
 ## 13. Carpetas de agentes
 
@@ -630,6 +634,6 @@ Los archivos personales de cada herramienta (`CLAUDE.local.md`, `.claude/setting
 - **D-10 Escáner de seguridad de dependencias.** Elegir un escáner para la API de Bun, o usar otro mecanismo de auditoría.
 - **D-11 Oxfmt.** Confirmar que está lo bastante estable para formatear en Bun; si no, usar Prettier con Bun.
 - **D-12 (resuelta)** Campos de los prototipos: los que entran están en la sección 8 y los que no, en la 12.1. El SQL propuesto está en `.antigravity/context/database.md`.
-- **D-13 Identificador universitario.** El formato `AAAA-II-FFF` se repite entre personas con el mismo año, iniciales y facultad. Se propone un correlativo (`-02`, `-03`). Confirmar esa regla, quién asigna el id (el sistema al matricular) y qué pasa con quien cambia de facultad (el id no cambia). El ejemplo recibido decía `2024-PM-601` pero `101` como código de Ingeniería; se asumió `101` y `601` quedó para Ciencias Agropecuarias.
-- **D-14 Cobro de varias multas.** La pantalla de caja permite pagar varias multas a la vez. Con un `Payment` por multa se emite un comprobante por multa; si se quiere un solo comprobante, hace falta una entidad `Receipt`.
-- **D-15 Moneda.** Los prototipos usan USD; confirmar la moneda de las multas.
+- **D-13 (resuelta)** Identificador universitario: `AAAA-II-FFF-NN` con correlativo siempre presente (sección 8.2). El ejemplo recibido decía `2024-PM-601` pero `101` como código de Ingeniería; se asumió `101`.
+- **D-14 (resuelta)** Cobro de varias multas: un `Receipt` agrupa varios `Payment` (sección 8).
+- **D-15 (resuelta)** Moneda: USD.
